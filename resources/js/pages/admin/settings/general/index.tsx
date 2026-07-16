@@ -1,7 +1,9 @@
 import { Head, useForm, router } from '@inertiajs/react';
 import { toast } from 'sonner';
-import { Plus, Trash2, Edit2, Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { Plus, Trash2, Edit2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import SearchBar from '@/components/SearchBar';
+import Pagination from '@/components/Pagination';
 
 interface Setting {
     key: string;
@@ -22,7 +24,7 @@ export default function SiteSettingsIndex({ settings }: SettingsProps) {
         status: 'active',
     });
 
-    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredSettings, setFilteredSettings] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
@@ -70,23 +72,16 @@ export default function SiteSettingsIndex({ settings }: SettingsProps) {
         status: setting.status 
     }));
 
-    // Filter settings based on search query
-    const filteredSettings = settingsArray.filter(setting => 
-        setting.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        setting.value.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Initialize filtered settings with all settings
+    useEffect(() => {
+        setFilteredSettings(settingsArray);
+    }, [settingsArray]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredSettings.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedSettings = filteredSettings.slice(startIndex, endIndex);
-
-    // Reset to page 1 when search changes
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-        setCurrentPage(1);
-    };
 
     return (
         <>
@@ -207,16 +202,15 @@ export default function SiteSettingsIndex({ settings }: SettingsProps) {
 
                             {/* Search Bar */}
                             <div className="mb-4">
-                                <div className="relative">
-                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search settings..."
-                                        value={searchQuery}
-                                        onChange={handleSearchChange}
-                                        className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 dark:border-neutral-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 text-sm transition-all"
-                                    />
-                                </div>
+                                <SearchBar
+                                    data={settingsArray}
+                                    searchFields={['key', 'value']}
+                                    onFilteredDataChange={(filtered) => {
+                                        setFilteredSettings(filtered);
+                                        setCurrentPage(1);
+                                    }}
+                                    placeholder="Search settings..."
+                                />
                             </div>
 
                             <div className="space-y-3">
@@ -277,46 +271,16 @@ export default function SiteSettingsIndex({ settings }: SettingsProps) {
                             </div>
 
                             {/* Pagination */}
-                            {totalPages > 1 && (
-                                <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-200 dark:border-neutral-700">
-                                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                                        Showing {startIndex + 1} to {Math.min(endIndex, filteredSettings.length)} of {filteredSettings.length} settings
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                            disabled={currentPage === 1}
-                                            className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all"
-                                        >
-                                            <ChevronLeft className="w-4 h-4" />
-                                            Previous
-                                        </button>
-                                        <div className="flex items-center gap-1">
-                                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                                <button
-                                                    key={page}
-                                                    onClick={() => setCurrentPage(page)}
-                                                    className={`w-8 h-8 text-sm font-medium rounded-lg transition-all ${
-                                                        currentPage === page
-                                                            ? 'bg-green-500 text-white'
-                                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800'
-                                                    }`}
-                                                >
-                                                    {page}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <button
-                                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                            disabled={currentPage === totalPages}
-                                            className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all"
-                                        >
-                                            Next
-                                            <ChevronRight className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                                startIndex={startIndex}
+                                endIndex={endIndex}
+                                totalItems={filteredSettings.length}
+                                itemName="settings"
+                                showPageNumbers={true}
+                            />
                         </div>
                     </div>
                 </div>

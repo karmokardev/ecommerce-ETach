@@ -183,4 +183,36 @@ class Category extends Model
 
         return false;
     }
+
+    /**
+     * Get all descendant IDs of this category.
+     */
+    public function getDescendantIds(): array
+    {
+        $ids = [];
+        $children = $this->children;
+
+        foreach ($children as $child) {
+            $ids[] = $child->id;
+            $ids = array_merge($ids, $child->getDescendantIds());
+        }
+
+        return $ids;
+    }
+
+    /**
+     * Scope to filter by category and all its descendants.
+     */
+    public function scopeWhereInTree($query, $categoryId)
+    {
+        $category = self::find($categoryId);
+        if (!$category) {
+            return $query;
+        }
+
+        $descendantIds = $category->getDescendantIds();
+        $allIds = array_merge([$categoryId], $descendantIds);
+
+        return $query->whereIn('id', $allIds);
+    }
 }

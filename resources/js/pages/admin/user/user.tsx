@@ -1,8 +1,11 @@
 import { Head, router } from '@inertiajs/react';
 import { User } from '@/types';
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DeleteModal from '@/components/DeleteModal';
+import SearchBar from '@/components/SearchBar';
+import StatusFilter from '@/components/StatusFilter';
+import Pagination from '@/components/Pagination';
 import { toast } from 'sonner';
 
 interface UsersProps {
@@ -14,9 +17,12 @@ interface UsersProps {
 }
 
 export default function Users({ users, filters }: UsersProps) {
-    const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [userToDelete, setUserToDelete] = useState<number | null>(null);
+    const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [statusFilter, setStatusFilter] = useState('');
+    const itemsPerPage = 10;
 
     const handleEdit = (userId: number) => {
         router.get(`/users/${userId}/edit`);
@@ -53,18 +59,27 @@ export default function Users({ users, filters }: UsersProps) {
         });
     };
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        router.get('/users', { search: searchTerm, per_page: filters.per_page }, { preserveState: true });
-    };
+    // Initialize filtered users with all users
+    useEffect(() => {
+        setFilteredUsers(users.data || []);
+    }, [users.data]);
 
-    const handlePageChange = (page: number) => {
-        router.get('/users', { 
-            search: filters.search, 
-            per_page: filters.per_page,
-            page 
-        }, { preserveState: true });
-    };
+    // Filter users by status
+    useEffect(() => {
+        if (statusFilter) {
+            const filtered = (users.data || []).filter((user: any) => user.status === statusFilter);
+            setFilteredUsers(filtered);
+            setCurrentPage(1);
+        } else {
+            setFilteredUsers(users.data || []);
+        }
+    }, [statusFilter, users.data]);
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
     return (
         <>
@@ -74,22 +89,27 @@ export default function Users({ users, filters }: UsersProps) {
                     <h1 className="text-2xl font-bold dark:text-white">Users Management</h1>
 
                 {/* Search Bar */}
-                <div className="">
-                    <form onSubmit={handleSearch} className="flex gap-4">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search by..."
-                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
-                            />
-                        <button
-                            type="submit"
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                            Search
-                        </button>
-                    </form>
+                <div className="flex items-center gap-4">
+                    <SearchBar
+                        data={users.data || []}
+                        searchFields={['username', 'email', 'phone']}
+                        onFilteredDataChange={(filtered) => {
+                            setFilteredUsers(filtered);
+                            setCurrentPage(1);
+                        }}
+                        placeholder="Search users..."
+                        className="w-96"
+                    />
+                    <StatusFilter
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        options={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'inactive', label: 'Inactive' },
+                            { value: 'suspended', label: 'Suspended' },
+                        ]}
+                        className="w-48"
+                    />
                 </div>
                 </div>
 
@@ -109,8 +129,8 @@ export default function Users({ users, filters }: UsersProps) {
                                 </tr>
                             </thead>
                             <tbody className="bg-white dark:bg-neutral-900 divide-y divide-gray-200 dark:divide-neutral-800">
-                                {users.data && users.data.length > 0 ? (
-                                    users.data.map((userItem: any) => (
+                                {paginatedUsers.length > 0 ? (
+                                    paginatedUsers.map((userItem: any) => (
                                         <tr key={userItem.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{userItem.id}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{userItem.username || 'N/A'}</td>
@@ -167,32 +187,15 @@ export default function Users({ users, filters }: UsersProps) {
                     </div>
 
                     {/* Pagination */}
-                    {users.last_page > 1 && (
-                        <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-neutral-800">
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                                Showing {users.from} to {users.to} of {users.total} users
-                            </div>
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => handlePageChange(users.current_page - 1)}
-                                    disabled={users.current_page === 1}
-                                    className="px-3 py-1 border border-gray-300 dark:border-neutral-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Previous
-                                </button>
-                                <span className="px-3 py-1 text-sm text-gray-700 dark:text-gray-300">
-                                    Page {users.current_page} of {users.last_page}
-                                </span>
-                                <button
-                                    onClick={() => handlePageChange(users.current_page + 1)}
-                                    disabled={users.current_page === users.last_page}
-                                    className="px-3 py-1 border border-gray-300 dark:border-neutral-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                        startIndex={startIndex}
+                        endIndex={endIndex}
+                        totalItems={filteredUsers.length}
+                        itemName="users"
+                    />
                 </div>
 
                 {/* Delete Modal */}

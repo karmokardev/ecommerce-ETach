@@ -42,7 +42,7 @@ class CategoryController extends Controller
         if ($request->parent_id === 'null') {
             $query->whereNull('parent_id');
         } else {
-            $query->where('parent_id', $request->parent_id);
+            $query->whereInTree($request->parent_id);
         }
     }
 

@@ -2,6 +2,8 @@ import { Head, router } from '@inertiajs/react';
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { useState } from 'react';
 import DeleteModal from '@/components/DeleteModal';
+import SearchBar from '@/components/SearchBar';
+import StatusFilter from '@/components/StatusFilter';
 import { toast } from 'sonner';
 
 interface Category {
@@ -173,7 +175,8 @@ export default function Categories({ categories, tree, statistics, allCategories
             .filter((cat) => cat.parent_id === parentId)
             .forEach((category) => {
                 options.push(
-                    <option key={category.id} value={category.id}>
+                    // <option key={category.id} value={category.id}>
+                    <option key={category.id} value={category.id.toString()}>
                         {prefix}{category.name}
                     </option>
                 );
@@ -193,22 +196,18 @@ export default function Categories({ categories, tree, statistics, allCategories
                     {/* Search Bar */}
                     <div className="flex items-center gap-4">
                         <form onSubmit={handleSearch} className="flex gap-2">
-                            <input
-                                type="text"
+                            <SearchBar
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onChange={setSearchTerm}
                                 placeholder="Search categories..."
-                                className="px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
+                                showSubmitButton={true}
+                                submitButtonText="Search"
+                                onSubmit={handleSearch}
                             />
-                            <select
+                            <StatusFilter
                                 value={statusFilter}
-                                onChange={(e) => handleStatusChange(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
-                            >
-                                <option value="">All Status</option>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                            </select>
+                                onChange={handleStatusChange}
+                            />
                             <select
                                 value={parentFilter}
                                 onChange={(e) => handleParentChange(e.target.value)}
@@ -218,12 +217,6 @@ export default function Categories({ categories, tree, statistics, allCategories
                                 <option value="null">Root Categories</option>
                                 {buildCategoryOptions(allCategories)}
                             </select>
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                Search
-                            </button>
                         </form>
                         <button
                             onClick={() => router.get('/categories/create')}

@@ -21,9 +21,9 @@ class UserSeeder extends Seeder
         $admin->assignRole('admin');
 
         // ======================
-        // 2. REGULAR USERS (10 users)
+        // 2. REGULAR USERS (50 users)
         // ======================
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $user = User::factory()->create([
                 'username' => 'User ' . $i,
                 'email' => 'user' . $i . '@gmail.com',
