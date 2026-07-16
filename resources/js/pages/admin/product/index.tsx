@@ -4,6 +4,7 @@ import { useState } from 'react';
 import DeleteModal from '@/components/DeleteModal';
 import SearchBar from '@/components/SearchBar';
 import StatusFilter from '@/components/StatusFilter';
+import SelectDropdown from '@/components/ui/SelectDropdown';
 import { toast } from 'sonner';
 
 interface Product {
@@ -200,33 +201,25 @@ export default function Products({ products, categories, brands, filters }: Prod
                                 value={statusFilter}
                                 onChange={handleStatusChange}
                             />
-                            <select
+                            <SelectDropdown
+                                categories={categories}
                                 value={categoryFilter}
-                                onChange={(e) => handleCategoryChange(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
-                            >
-                                <option value="">All Categories</option>
-                                {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.id.toString()}>{cat.name}</option>
-                                ))}
-                            </select>
-                            <select
+                                onChange={handleCategoryChange}
+                                placeholder="All Categories"
+                            />
+                            <SelectDropdown
+                                categories={brands}
                                 value={brandFilter}
-                                onChange={(e) => handleBrandChange(e.target.value)}
-                                className="px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
-                            >
-                                <option value="">All Brands</option>
-                                {brands.map((brand) => (
-                                    <option key={brand.id} value={brand.id.toString()}>{brand.name}</option>
-                                ))}
-                            </select>
+                                onChange={handleBrandChange}
+                                placeholder="All Brands"
+                            />
                         </div>
                         <button
                             onClick={() => router.get('/products/create')}
                             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                         >
                             <FaPlus />
-                            Add Product
+                            Add
                         </button>
                     </div>
                 </div>
@@ -269,8 +262,7 @@ export default function Products({ products, categories, brands, filters }: Prod
                                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                         />
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Image</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Brand</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
@@ -290,27 +282,29 @@ export default function Products({ products, categories, brands, filters }: Prod
                                                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                                 />
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                {product.thumbnail ? (
-                                                    <img
-                                                        src={product.thumbnail.startsWith('http') ? product.thumbnail : `/storage/${product.thumbnail}`}
-                                                        alt={product.name}
-                                                        className="h-12 w-12 object-cover rounded-lg"
-                                                    />
-                                                ) : (
-                                                    <div className="h-12 w-12 bg-gray-200 dark:bg-neutral-700 rounded-lg flex items-center justify-center">
-                                                        <svg className="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                        </svg>
+                                            <td className="px-4 py-4">
+                                                <div className="flex items-center gap-4">
+                                                    {product.thumbnail ? (
+                                                        <img
+                                                            src={product.thumbnail.startsWith('http') ? product.thumbnail : `/storage/${product.thumbnail}`}
+                                                            alt={product.name}
+                                                            className="h-12 w-12 object-cover rounded-lg"
+                                                        />
+                                                    ) : (
+                                                        <div className="h-12 w-12 bg-gray-200 dark:bg-neutral-700 rounded-lg flex items-center justify-center">
+                                                            <svg className="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                        </div>
+                                                    )}
+                                                    <div className='max-w-3xs'>
+                                                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.name}</div>
+                                                        <div className="text-sm text-gray-500 dark:text-gray-400">{product.slug}</div>
+                                                        {product.short_description && (
+                                                            <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 truncate">{product.short_description}</div>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.name}</div>
-                                                <div className="text-sm text-gray-500 dark:text-gray-400">{product.slug}</div>
-                                                {product.short_description && (
-                                                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 truncate max-w-xs">{product.short_description}</div>
-                                                )}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 {product.category ? product.category.name : '-'}
@@ -362,7 +356,7 @@ export default function Products({ products, categories, brands, filters }: Prod
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No products found
                                         </td>
                                     </tr>

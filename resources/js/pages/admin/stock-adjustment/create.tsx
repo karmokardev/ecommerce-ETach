@@ -43,7 +43,7 @@ export default function CreateStockAdjustment({ productVariants, warehouses }: C
         });
     };
 
-    const selectedVariant = productVariants.find(v => v.id === parseInt(data.product_variant_id.toString()));
+    const selectedVariant = productVariants?.find(v => v.id === parseInt(data.product_variant_id.toString()));
 
     return (
         <>
@@ -69,7 +69,7 @@ export default function CreateStockAdjustment({ productVariants, warehouses }: C
                                         className="w-full px-3 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
                                     >
                                         <option value="">Select Variant</option>
-                                        {productVariants.map((variant) => (
+                                        {productVariants?.map((variant) => (
                                             <option key={variant.id} value={variant.id}>
                                                 {variant.sku} - {variant.product?.name} (Current Stock: {variant.current_stock})
                                             </option>
@@ -92,7 +92,7 @@ export default function CreateStockAdjustment({ productVariants, warehouses }: C
                                         className="w-full px-3 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
                                     >
                                         <option value="">Select Warehouse</option>
-                                        {warehouses.map((warehouse) => (
+                                        {warehouses?.map((warehouse) => (
                                             <option key={warehouse.id} value={warehouse.id}>{warehouse.name}</option>
                                         ))}
                                     </select>

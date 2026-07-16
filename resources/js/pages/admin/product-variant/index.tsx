@@ -218,7 +218,7 @@ export default function ProductVariants({ variants, filters }: ProductVariantsPr
                             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                         >
                             <FaPlus />
-                            Add Variant
+                            Add
                         </button>
                     </div>
                 </div>
@@ -261,8 +261,7 @@ export default function ProductVariants({ variants, filters }: ProductVariantsPr
                                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                         />
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">SKU</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Variant</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Barcode</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Price</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Stock</th>
@@ -283,11 +282,11 @@ export default function ProductVariants({ variants, filters }: ProductVariantsPr
                                                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                                 />
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                {variant.sku}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {variant.product ? variant.product.name : '-'}
+                                            <td className="px-6 py-4">
+                                                <div>
+                                                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{variant.sku}</div>
+                                                    <div className="text-sm text-gray-500 dark:text-gray-400">{variant.product ? variant.product.name : '-'}</div>
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 {variant.barcode || '-'}
@@ -295,7 +294,7 @@ export default function ProductVariants({ variants, filters }: ProductVariantsPr
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                                 ${Number(variant.price).toFixed(2)}
                                                 {variant.compare_price && (
-                                                    <span className="ml-2 text-sm text-gray-400 line-through">${Number(variant.compare_price).toFixed(2)}</span>
+                                                    <span className="ml-2 text-sm text-red-400 line-through">${Number(variant.compare_price).toFixed(2)}</span>
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
@@ -339,7 +338,7 @@ export default function ProductVariants({ variants, filters }: ProductVariantsPr
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={9} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No variants found
                                         </td>
                                     </tr>

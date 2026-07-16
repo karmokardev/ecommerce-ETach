@@ -214,7 +214,6 @@ export default function Purchases({ purchases, filters }: PurchasesProps) {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Invoice No</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Supplier</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Warehouse</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
@@ -239,10 +238,8 @@ export default function Purchases({ purchases, filters }: PurchasesProps) {
                                                 {purchase.supplier ? purchase.supplier.name : '-'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {purchase.warehouse ? purchase.warehouse.name : '-'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {new Date(purchase.purchase_date).toLocaleDateString()}
+                                                <div className='font-bold'>{purchase.warehouse ? purchase.warehouse.name : '-'}</div>
+                                                <div className="text-xs text-gray-400 dark:text-gray-500">{new Date(purchase.purchase_date).toLocaleDateString()}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                                 ${Number(purchase.total).toFixed(2)}
@@ -282,7 +279,7 @@ export default function Purchases({ purchases, filters }: PurchasesProps) {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No purchases found
                                         </td>
                                     </tr>

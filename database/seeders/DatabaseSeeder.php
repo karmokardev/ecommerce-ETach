@@ -26,5 +26,13 @@ class DatabaseSeeder extends Seeder
         $this->call(AttributeSeeder::class);
         $this->call(AttributeValueSeeder::class);
         $this->call(ProductSeeder::class);
+        $this->call(SupplierSeeder::class);
+        $this->call(WarehouseSeeder::class);
+        $this->call(PurchaseSeeder::class);
+        $this->call(PurchaseItemSeeder::class);
+        $this->call(StockAdjustmentSeeder::class);
+        $this->call(StockTransferSeeder::class);
+        $this->call(StockTransferItemSeeder::class);
+        $this->call(StockMovementSeeder::class);
     }
 }

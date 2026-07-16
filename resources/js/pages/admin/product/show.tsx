@@ -209,7 +209,7 @@ export default function ShowProduct({ product }: ShowProductProps) {
                                     <div className="space-y-3">
                                         {product.attribute_values.map((av) => (
                                             <div key={av.id} className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-neutral-800 last:border-0">
-                                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{av.attribute.name}</span>
+                                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{av.attribute?.name || '-'}</span>
                                                 <span className="text-sm text-gray-900 dark:text-gray-100">{av.value}</span>
                                             </div>
                                         ))}

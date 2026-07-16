@@ -204,7 +204,6 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quantity</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Before</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">After</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -227,7 +226,8 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                                 {adjustment.product_variant?.product?.name || '-'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {adjustment.warehouse?.name || '-'}
+                                                <div className='font-bold'>{adjustment.warehouse?.name || '-'}</div>
+                                                <div className="text-xs text-gray-400 dark:text-gray-500">{new Date(adjustment.created_at).toLocaleDateString()}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-2 py-1 text-xs rounded-full ${adjustment.adjustment_type === 'increase' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
@@ -242,9 +242,6 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                                 {adjustment.after_stock}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {new Date(adjustment.created_at).toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 <button
@@ -266,7 +263,7 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={10} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                        <td colSpan={9} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                                             No stock adjustments found
                                         </td>
                                     </tr>
