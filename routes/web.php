@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\AttributeValueController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -106,6 +108,43 @@ Route::middleware(['auth'])->group(function () {
         // Brand API endpoints
         Route::get('/api/brands/dropdown', [BrandController::class, 'dropdown'])->name('api.brands.dropdown');
         Route::get('/api/brands/statistics', [BrandController::class, 'statistics'])->name('api.brands.statistics');
+
+        // attributes - admin only
+        Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes.index');
+        Route::get('/attributes/create', [AttributeController::class, 'create'])->name('attributes.create');
+        Route::post('/attributes', [AttributeController::class, 'store'])->name('attributes.store');
+        Route::get('/attributes/{attribute}', [AttributeController::class, 'show'])->name('attributes.show');
+        Route::get('/attributes/{attribute}/edit', [AttributeController::class, 'edit'])->name('attributes.edit');
+        Route::put('/attributes/{attribute}', [AttributeController::class, 'update'])->name('attributes.update');
+        Route::delete('/attributes/{attribute}', [AttributeController::class, 'destroy'])->name('attributes.destroy');
+        Route::post('/attributes/bulk-delete', [AttributeController::class, 'bulkDelete'])->name('attributes.bulk-delete');
+        Route::post('/attributes/bulk-status', [AttributeController::class, 'bulkUpdateStatus'])->name('attributes.bulk-status');
+        Route::patch('/attributes/{attribute}/toggle-status', [AttributeController::class, 'toggleStatus'])->name('attributes.toggle-status');
+        Route::post('/attributes/reorder', [AttributeController::class, 'reorder'])->name('attributes.reorder');
+
+        // Attribute API endpoints
+        Route::get('/api/attributes/dropdown', [AttributeController::class, 'dropdown'])->name('api.attributes.dropdown');
+        Route::get('/api/attributes/statistics', [AttributeController::class, 'statistics'])->name('api.attributes.statistics');
+
+        // Attribute values overview
+        Route::get('/attribute-values', [AttributeController::class, 'valuesOverview'])->name('attribute-values.overview');
+
+        // attribute values - admin only
+        Route::get('/attributes/{attribute}/values', [AttributeValueController::class, 'index'])->name('attributes.values.index');
+        Route::get('/attributes/{attribute}/values/create', [AttributeValueController::class, 'create'])->name('attributes.values.create');
+        Route::post('/attributes/{attribute}/values', [AttributeValueController::class, 'store'])->name('attributes.values.store');
+        Route::get('/attributes/{attribute}/values/{attributeValue}', [AttributeValueController::class, 'show'])->name('attributes.values.show');
+        Route::get('/attributes/{attribute}/values/{attributeValue}/edit', [AttributeValueController::class, 'edit'])->name('attributes.values.edit');
+        Route::put('/attributes/{attribute}/values/{attributeValue}', [AttributeValueController::class, 'update'])->name('attributes.values.update');
+        Route::delete('/attributes/{attribute}/values/{attributeValue}', [AttributeValueController::class, 'destroy'])->name('attributes.values.destroy');
+        Route::post('/attributes/{attribute}/values/bulk-delete', [AttributeValueController::class, 'bulkDelete'])->name('attributes.values.bulk-delete');
+        Route::post('/attributes/{attribute}/values/bulk-status', [AttributeValueController::class, 'bulkUpdateStatus'])->name('attributes.values.bulk-status');
+        Route::patch('/attributes/{attribute}/values/{attributeValue}/toggle-status', [AttributeValueController::class, 'toggleStatus'])->name('attributes.values.toggle-status');
+        Route::post('/attributes/{attribute}/values/reorder', [AttributeValueController::class, 'reorder'])->name('attributes.values.reorder');
+
+        // Attribute Value API endpoints
+        Route::get('/api/attributes/{attribute}/values/dropdown', [AttributeValueController::class, 'dropdown'])->name('api.attributes.values.dropdown');
+        Route::get('/api/attributes/{attribute}/values/statistics', [AttributeValueController::class, 'statistics'])->name('api.attributes.values.statistics');
     });
 
 });

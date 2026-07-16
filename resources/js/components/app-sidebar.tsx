@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag } from 'lucide-react';
+import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -29,6 +29,8 @@ const navItemsByRole: Record<string, NavItem[]> = {
             items: [
                 { title: 'Categories', href: '/categories', icon: LayoutGrid },
                 { title: 'Brands', href: '/brands', icon: Tag },
+                { title: 'Attributes', href: '/attributes', icon: SlidersHorizontal },
+                { title: 'Attribute Values', href: '/attribute-values', icon: Tags },
             ]
         },
         { 

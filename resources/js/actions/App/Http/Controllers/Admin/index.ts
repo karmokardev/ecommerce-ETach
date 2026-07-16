@@ -8,6 +8,8 @@ import SiteSettingsController from './SiteSettingsController'
 import SettingController from './SettingController'
 import CategoryController from './CategoryController'
 import BrandController from './BrandController'
+import AttributeController from './AttributeController'
+import AttributeValueController from './AttributeValueController'
 
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -20,6 +22,8 @@ const Admin = {
     SettingController: Object.assign(SettingController, SettingController),
     CategoryController: Object.assign(CategoryController, CategoryController),
     BrandController: Object.assign(BrandController, BrandController),
+    AttributeController: Object.assign(AttributeController, AttributeController),
+    AttributeValueController: Object.assign(AttributeValueController, AttributeValueController),
 }
 
 export default Admin
