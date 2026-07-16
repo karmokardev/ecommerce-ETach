@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ColorsController;
 use App\Http\Controllers\Admin\PresetColorController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SiteSettingsController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -69,6 +70,24 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/admin/settings/typography', [SiteSettingsController::class, 'typography'])->name('admin.settings.typography');
         Route::post('/admin/settings/typography', [SiteSettingsController::class, 'updateTypography'])->name('admin.settings.typography.update');
+
+        // categories - admin only
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+        Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+        Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+        Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+        Route::post('/categories/bulk-delete', [CategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');
+        Route::post('/categories/bulk-status', [CategoryController::class, 'bulkUpdateStatus'])->name('categories.bulk-status');
+        Route::patch('/categories/{category}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+        Route::post('/categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
+        
+        // Category API endpoints
+        Route::get('/api/categories/tree', [CategoryController::class, 'tree'])->name('api.categories.tree');
+        Route::get('/api/categories/dropdown', [CategoryController::class, 'dropdown'])->name('api.categories.dropdown');
+        Route::get('/api/categories/statistics', [CategoryController::class, 'statistics'])->name('api.categories.statistics');
     });
 
 });
