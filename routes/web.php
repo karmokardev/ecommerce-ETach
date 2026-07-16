@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\PresetColorController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -88,6 +89,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/api/categories/tree', [CategoryController::class, 'tree'])->name('api.categories.tree');
         Route::get('/api/categories/dropdown', [CategoryController::class, 'dropdown'])->name('api.categories.dropdown');
         Route::get('/api/categories/statistics', [CategoryController::class, 'statistics'])->name('api.categories.statistics');
+
+        // brands - admin only
+        Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
+        Route::get('/brands/create', [BrandController::class, 'create'])->name('brands.create');
+        Route::post('/brands', [BrandController::class, 'store'])->name('brands.store');
+        Route::get('/brands/{brand}', [BrandController::class, 'show'])->name('brands.show');
+        Route::get('/brands/{brand}/edit', [BrandController::class, 'edit'])->name('brands.edit');
+        Route::put('/brands/{brand}', [BrandController::class, 'update'])->name('brands.update');
+        Route::delete('/brands/{brand}', [BrandController::class, 'destroy'])->name('brands.destroy');
+        Route::post('/brands/bulk-delete', [BrandController::class, 'bulkDelete'])->name('brands.bulk-delete');
+        Route::post('/brands/bulk-status', [BrandController::class, 'bulkUpdateStatus'])->name('brands.bulk-status');
+        Route::patch('/brands/{brand}/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggle-status');
+        Route::post('/brands/reorder', [BrandController::class, 'reorder'])->name('brands.reorder');
+
+        // Brand API endpoints
+        Route::get('/api/brands/dropdown', [BrandController::class, 'dropdown'])->name('api.brands.dropdown');
+        Route::get('/api/brands/statistics', [BrandController::class, 'statistics'])->name('api.brands.statistics');
     });
 
 });

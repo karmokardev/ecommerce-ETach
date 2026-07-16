@@ -7,6 +7,7 @@ import PresetColorController from './PresetColorController'
 import SiteSettingsController from './SiteSettingsController'
 import SettingController from './SettingController'
 import CategoryController from './CategoryController'
+import BrandController from './BrandController'
 
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -18,6 +19,7 @@ const Admin = {
     SiteSettingsController: Object.assign(SiteSettingsController, SiteSettingsController),
     SettingController: Object.assign(SettingController, SettingController),
     CategoryController: Object.assign(CategoryController, CategoryController),
+    BrandController: Object.assign(BrandController, BrandController),
 }
 
 export default Admin
