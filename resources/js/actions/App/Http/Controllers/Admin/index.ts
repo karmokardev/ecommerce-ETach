@@ -10,6 +10,13 @@ import CategoryController from './CategoryController'
 import BrandController from './BrandController'
 import AttributeController from './AttributeController'
 import AttributeValueController from './AttributeValueController'
+import ProductController from './ProductController'
+import ProductVariantController from './ProductVariantController'
+import SupplierController from './SupplierController'
+import WarehouseController from './WarehouseController'
+import PurchaseController from './PurchaseController'
+import StockAdjustmentController from './StockAdjustmentController'
+import StockTransferController from './StockTransferController'
 
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -24,6 +31,13 @@ const Admin = {
     BrandController: Object.assign(BrandController, BrandController),
     AttributeController: Object.assign(AttributeController, AttributeController),
     AttributeValueController: Object.assign(AttributeValueController, AttributeValueController),
+    ProductController: Object.assign(ProductController, ProductController),
+    ProductVariantController: Object.assign(ProductVariantController, ProductVariantController),
+    SupplierController: Object.assign(SupplierController, SupplierController),
+    WarehouseController: Object.assign(WarehouseController, WarehouseController),
+    PurchaseController: Object.assign(PurchaseController, PurchaseController),
+    StockAdjustmentController: Object.assign(StockAdjustmentController, StockAdjustmentController),
+    StockTransferController: Object.assign(StockTransferController, StockTransferController),
 }
 
 export default Admin

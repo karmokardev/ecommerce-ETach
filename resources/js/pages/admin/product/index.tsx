@@ -1,99 +1,98 @@
 import { Head, router } from '@inertiajs/react';
-import { FaEdit, FaTrash, FaPlus, FaEye } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaEye, FaStar } from "react-icons/fa";
 import { useState } from 'react';
 import DeleteModal from '@/components/DeleteModal';
 import SearchBar from '@/components/SearchBar';
 import StatusFilter from '@/components/StatusFilter';
 import { toast } from 'sonner';
 
-interface Category {
+interface Product {
     id: number;
-    parent_id: number | null;
+    category_id: number | null;
+    brand_id: number | null;
     name: string;
     slug: string;
+    short_description: string | null;
     description: string | null;
-    image: string | null;
-    sort: number;
+    thumbnail: string | null;
     status: string;
-    depth: number;
-    breadcrumb: string;
-    has_children: boolean;
+    is_featured: boolean;
     created_at: string;
     updated_at: string;
-    parent?: Category;
+    category?: {
+        id: number;
+        name: string;
+    };
+    brand?: {
+        id: number;
+        name: string;
+    };
 }
 
-interface CategoriesProps {
-    categories: {
-        data: Category[];
+interface ProductsProps {
+    products: {
+        data: Product[];
         current_page: number;
         last_page: number;
         from: number;
         to: number;
         total: number;
     };
-    tree: any[];
-    statistics: {
-        total: number;
-        active: number;
-        inactive: number;
-        root: number;
-        with_children: number;
-    };
-    allCategories: Category[];
+    categories: Array<{ id: number; name: string }>;
+    brands: Array<{ id: number; name: string }>;
     filters: {
         search: string;
         status: string;
-        parent_id: string;
+        category_id: string;
+        brand_id: string;
         per_page: number;
         page: number;
     };
 }
 
-export default function Categories({ categories, tree, statistics, allCategories, filters }: CategoriesProps) {
+export default function Products({ products, categories, brands, filters }: ProductsProps) {
     const [searchTerm, setSearchTerm] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || '');
-    const [parentFilter, setParentFilter] = useState(filters.parent_id || '');
+    const [categoryFilter, setCategoryFilter] = useState(filters.category_id || '');
+    const [brandFilter, setBrandFilter] = useState(filters.brand_id || '');
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [categoryToDelete, setCategoryToDelete] = useState<number | null>(null);
-    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [productToDelete, setProductToDelete] = useState<number | null>(null);
+    const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
 
-    const handleEdit = (categoryId: number) => {
-        router.get(`/categories/${categoryId}/edit`);
+    const handleEdit = (productId: number) => {
+        router.get(`/products/${productId}/edit`);
     };
 
-    const handleView = (categoryId: number) => {
-        router.get(`/categories/${categoryId}`);
+    const handleView = (productId: number) => {
+        router.get(`/products/${productId}`);
     };
 
-    const handleDeleteClick = (categoryId: number) => {
-        setCategoryToDelete(categoryId);
+    const handleDeleteClick = (productId: number) => {
+        setProductToDelete(productId);
         setDeleteModalOpen(true);
     };
 
     const handleDeleteConfirm = () => {
-        if (categoryToDelete) {
-            router.delete(`/categories/${categoryToDelete}`, {
+        if (productToDelete) {
+            router.delete(`/products/${productToDelete}`, {
                 onSuccess: () => {
-                    toast.success('Category deleted successfully');
+                    toast.success('Product deleted successfully');
                     setDeleteModalOpen(false);
-                    setCategoryToDelete(null);
+                    setProductToDelete(null);
                 },
                 onError: () => {
-                    toast.error('Failed to delete category');
+                    toast.error('Failed to delete product');
                 },
             });
         }
     };
 
-    // Central place that always builds the query from the CURRENT live filter state.
-    // Every navigation (search, filter change, pagination) goes through this so
-    // filters and pagination never get out of sync with each other.
-    const navigate = (overrides: Partial<{ search: string; status: string; parent_id: string; page: number; per_page: number }> = {}) => {
-        router.get('/categories', {
+    const navigate = (overrides: Partial<{ search: string; status: string; category_id: string; brand_id: string; page: number; per_page: number }> = {}) => {
+        router.get('/products', {
             search: searchTerm,
             status: statusFilter,
-            parent_id: parentFilter,
+            category_id: categoryFilter,
+            brand_id: brandFilter,
             per_page: filters.per_page,
             page: 1,
             ...overrides,
@@ -114,9 +113,14 @@ export default function Categories({ categories, tree, statistics, allCategories
         navigate({ status: value, page: 1 });
     };
 
-    const handleParentChange = (value: string) => {
-        setParentFilter(value);
-        navigate({ parent_id: value, page: 1 });
+    const handleCategoryChange = (value: string) => {
+        setCategoryFilter(value);
+        navigate({ category_id: value, page: 1 });
+    };
+
+    const handleBrandChange = (value: string) => {
+        setBrandFilter(value);
+        navigate({ brand_id: value, page: 1 });
     };
 
     const handlePageChange = (page: number) => {
@@ -125,85 +129,69 @@ export default function Categories({ categories, tree, statistics, allCategories
 
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
-            setSelectedCategories(categories.data.map((cat) => cat.id));
+            setSelectedProducts(products.data.map((prod) => prod.id));
         } else {
-            setSelectedCategories([]);
+            setSelectedProducts([]);
         }
     };
 
-    const handleSelectCategory = (categoryId: number) => {
-        if (selectedCategories.includes(categoryId)) {
-            setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
+    const handleSelectProduct = (productId: number) => {
+        if (selectedProducts.includes(productId)) {
+            setSelectedProducts(selectedProducts.filter(id => id !== productId));
         } else {
-            setSelectedCategories([...selectedCategories, categoryId]);
+            setSelectedProducts([...selectedProducts, productId]);
         }
     };
 
     const handleBulkDelete = () => {
-        if (selectedCategories.length > 0) {
-            router.post('/categories/bulk-delete', { ids: selectedCategories }, {
+        if (selectedProducts.length > 0) {
+            router.post('/products/bulk-delete', { ids: selectedProducts }, {
                 onSuccess: () => {
-                    toast.success('Categories deleted successfully');
-                    setSelectedCategories([]);
+                    toast.success('Products deleted successfully');
+                    setSelectedProducts([]);
                 },
                 onError: () => {
-                    toast.error('Failed to delete categories');
+                    toast.error('Failed to delete products');
                 },
             });
         }
     };
 
     const handleBulkStatusUpdate = (status: string) => {
-        if (selectedCategories.length > 0) {
-            router.post('/categories/bulk-status', { ids: selectedCategories, status }, {
+        if (selectedProducts.length > 0) {
+            router.post('/products/bulk-status', { ids: selectedProducts, status }, {
                 onSuccess: () => {
-                    toast.success('Categories status updated successfully');
-                    setSelectedCategories([]);
+                    toast.success('Products status updated successfully');
+                    setSelectedProducts([]);
                 },
                 onError: () => {
-                    toast.error('Failed to update categories status');
+                    toast.error('Failed to update products status');
                 },
             });
         }
     };
 
-    const handleToggleStatus = (categoryId: number) => {
-        router.patch(`/categories/${categoryId}/toggle-status`);
+    const handleToggleStatus = (productId: number) => {
+        router.patch(`/products/${productId}/toggle-status`);
     };
 
-    const buildCategoryOptions = (categories: Category[], parentId: number | null = null, level: number = 0): React.ReactElement[] => {
-        const options: React.ReactElement[] = [];
-        const prefix = '— '.repeat(level);
-
-        categories
-            .filter((cat) => cat.parent_id === parentId)
-            .forEach((category) => {
-                options.push(
-                    // <option key={category.id} value={category.id}>
-                    <option key={category.id} value={category.id.toString()}>
-                        {prefix}{category.name}
-                    </option>
-                );
-                options.push(...buildCategoryOptions(categories, category.id, level + 1));
-            });
-
-        return options;
+    const handleToggleFeatured = (productId: number) => {
+        router.patch(`/products/${productId}/toggle-featured`);
     };
 
     return (
         <>
-            <Head title="Categories Management" />
+            <Head title="Products Management" />
             <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold dark:text-white">Categories Management</h1>
+                    <h1 className="text-2xl font-bold dark:text-white">Products Management</h1>
 
-                    {/* Search Bar */}
                     <div className="flex items-center gap-4">
                         <div className="flex gap-2">
                             <SearchBar
                                 value={searchTerm}
                                 onChange={setSearchTerm}
-                                placeholder="Search categories..."
+                                placeholder="Search products..."
                                 showSubmitButton={true}
                                 submitButtonText="Search"
                                 onSubmit={handleSearch}
@@ -213,47 +201,38 @@ export default function Categories({ categories, tree, statistics, allCategories
                                 onChange={handleStatusChange}
                             />
                             <select
-                                value={parentFilter}
-                                onChange={(e) => handleParentChange(e.target.value)}
+                                value={categoryFilter}
+                                onChange={(e) => handleCategoryChange(e.target.value)}
                                 className="px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
                             >
-                                <option value="">All Parents</option>
-                                <option value="null">Root Categories</option>
-                                {buildCategoryOptions(allCategories)}
+                                <option value="">All Categories</option>
+                                {categories.map((cat) => (
+                                    <option key={cat.id} value={cat.id.toString()}>{cat.name}</option>
+                                ))}
+                            </select>
+                            <select
+                                value={brandFilter}
+                                onChange={(e) => handleBrandChange(e.target.value)}
+                                className="px-4 py-2 border border-gray-300 dark:border-neutral-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100"
+                            >
+                                <option value="">All Brands</option>
+                                {brands.map((brand) => (
+                                    <option key={brand.id} value={brand.id.toString()}>{brand.name}</option>
+                                ))}
                             </select>
                         </div>
                         <button
-                            onClick={() => router.get('/categories/create')}
+                            onClick={() => router.get('/products/create')}
                             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                         >
                             <FaPlus />
-                            Add
+                            Add Product
                         </button>
                     </div>
                 </div>
 
-                {/* Statistics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border dark:border-neutral-800 p-4">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">Total Categories</div>
-                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{statistics.total}</div>
-                    </div>
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border dark:border-neutral-800 p-4">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">Active</div>
-                        <div className="text-2xl font-bold text-green-600 dark:text-green-400">{statistics.active}</div>
-                    </div>
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border dark:border-neutral-800 p-4">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">Inactive</div>
-                        <div className="text-2xl font-bold text-red-600 dark:text-red-400">{statistics.inactive}</div>
-                    </div>
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border dark:border-neutral-800 p-4">
-                        <div className="text-sm text-gray-500 dark:text-gray-400">Root Categories</div>
-                        <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{statistics.root}</div>
-                    </div>
-                </div>
-
                 {/* Bulk Actions */}
-                {selectedCategories.length > 0 && (
+                {selectedProducts.length > 0 && (
                     <div className="flex gap-2 mb-4">
                         <button
                             onClick={() => handleBulkStatusUpdate('active')}
@@ -285,36 +264,37 @@ export default function Categories({ categories, tree, statistics, allCategories
                                     <th className="px-6 py-3 text-left">
                                         <input
                                             type="checkbox"
-                                            checked={selectedCategories.length === categories.data.length && categories.data.length > 0}
+                                            checked={selectedProducts.length === products.data.length && products.data.length > 0}
                                             onChange={handleSelectAll}
                                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                         />
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Image</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Parent</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sort</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Brand</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Featured</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white dark:bg-neutral-900 divide-y divide-gray-200 dark:divide-neutral-800">
-                                {categories.data && categories.data.length > 0 ? (
-                                    categories.data.map((category) => (
-                                        <tr key={category.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800">
+                                {products.data && products.data.length > 0 ? (
+                                    products.data.map((product) => (
+                                        <tr key={product.id} className="hover:bg-gray-50 dark:hover:bg-neutral-800">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <input
                                                     type="checkbox"
-                                                    checked={selectedCategories.includes(category.id)}
-                                                    onChange={() => handleSelectCategory(category.id)}
+                                                    checked={selectedProducts.includes(product.id)}
+                                                    onChange={() => handleSelectProduct(product.id)}
                                                     className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                                 />
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
-                                                {category.image ? (
+                                                {product.thumbnail ? (
                                                     <img
-                                                        src={category.image.startsWith('http') ? category.image : `/storage/${category.image}`}
-                                                        alt={category.name}
+                                                        src={product.thumbnail.startsWith('http') ? product.thumbnail : `/storage/${product.thumbnail}`}
+                                                        alt={product.name}
                                                         className="h-12 w-12 object-cover rounded-lg"
                                                     />
                                                 ) : (
@@ -326,43 +306,52 @@ export default function Categories({ categories, tree, statistics, allCategories
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{category.name}</div>
-                                                <div className="text-sm text-gray-500 dark:text-gray-400">{category.slug}</div>
-                                                {category.breadcrumb && (
-                                                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">{category.breadcrumb}</div>
+                                                <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{product.name}</div>
+                                                <div className="text-sm text-gray-500 dark:text-gray-400">{product.slug}</div>
+                                                {product.short_description && (
+                                                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-1 truncate max-w-xs">{product.short_description}</div>
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {category.parent ? category.parent.name : 'Root'}
+                                                {product.category ? product.category.name : '-'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {category.sort}
+                                                {product.brand ? product.brand.name : '-'}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <button
-                                                    onClick={() => handleToggleStatus(category.id)}
-                                                    className={`px-2 py-1 text-xs rounded-full ${category.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}
+                                                    onClick={() => handleToggleStatus(product.id)}
+                                                    className={`px-2 py-1 text-xs rounded-full ${product.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}
                                                 >
-                                                    {category.status === 'active' ? 'Active' : 'Inactive'}
+                                                    {product.status === 'active' ? 'Active' : 'Inactive'}
+                                                </button>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <button
+                                                    onClick={() => handleToggleFeatured(product.id)}
+                                                    className={`text-lg ${product.is_featured ? 'text-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
+                                                    title={product.is_featured ? 'Featured' : 'Not Featured'}
+                                                >
+                                                    <FaStar />
                                                 </button>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 <button
-                                                    onClick={() => handleView(category.id)}
+                                                    onClick={() => handleView(product.id)}
                                                     className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 mr-3 transition-colors"
                                                     title="View"
                                                 >
                                                     <FaEye className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleEdit(category.id)}
+                                                    onClick={() => handleEdit(product.id)}
                                                     className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 mr-3 transition-colors"
                                                     title="Edit"
                                                 >
                                                     <FaEdit className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDeleteClick(category.id)}
+                                                    onClick={() => handleDeleteClick(product.id)}
                                                     className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                                                     title="Delete"
                                                 >
@@ -373,8 +362,8 @@ export default function Categories({ categories, tree, statistics, allCategories
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                                            No categories found
+                                        <td colSpan={8} className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                            No products found
                                         </td>
                                     </tr>
                                 )}
@@ -383,25 +372,25 @@ export default function Categories({ categories, tree, statistics, allCategories
                     </div>
 
                     {/* Pagination */}
-                    {categories.last_page > 1 && (
+                    {products.last_page > 1 && (
                         <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 dark:border-neutral-800">
                             <div className="text-sm text-gray-500 dark:text-gray-400">
-                                Showing {categories.from} to {categories.to} of {categories.total} categories
+                                Showing {products.from} to {products.to} of {products.total} products
                             </div>
                             <div className="flex gap-2">
                                 <button
-                                    onClick={() => handlePageChange(categories.current_page - 1)}
-                                    disabled={categories.current_page === 1}
+                                    onClick={() => handlePageChange(products.current_page - 1)}
+                                    disabled={products.current_page === 1}
                                     className="px-3 py-1 border border-gray-300 dark:border-neutral-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Previous
                                 </button>
                                 <span className="px-3 py-1 text-sm text-gray-700 dark:text-gray-300">
-                                    Page {categories.current_page} of {categories.last_page}
+                                    Page {products.current_page} of {products.last_page}
                                 </span>
                                 <button
-                                    onClick={() => handlePageChange(categories.current_page + 1)}
-                                    disabled={categories.current_page === categories.last_page}
+                                    onClick={() => handlePageChange(products.current_page + 1)}
+                                    disabled={products.current_page === products.last_page}
                                     className="px-3 py-1 border border-gray-300 dark:border-neutral-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Next
@@ -415,11 +404,11 @@ export default function Categories({ categories, tree, statistics, allCategories
                     open={deleteModalOpen}
                     onClose={() => {
                         setDeleteModalOpen(false);
-                        setCategoryToDelete(null);
+                        setProductToDelete(null);
                     }}
                     onConfirm={handleDeleteConfirm}
-                    title="Delete Category"
-                    message="Are you sure you want to delete this category? This action cannot be undone."
+                    title="Delete Product"
+                    message="Are you sure you want to delete this product? This action cannot be undone."
                 />
             </div>
         </>
