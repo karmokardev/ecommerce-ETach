@@ -26,15 +26,19 @@ class StockTransferSeeder extends Seeder
             // Pick two different warehouses
             $fromIndex = array_rand($warehouses);
             $toIndex = ($fromIndex + 1) % count($warehouses);
-            
+
             $fromWarehouse = $warehouses[$fromIndex];
             $toWarehouse = $warehouses[$toIndex];
-            
+
             // Generate random date within last 60 days
             $transferDate = Carbon::now()->subDays(rand(0, 60));
             $status = rand(0, 1) ? 'completed' : 'pending';
 
+            // Generate unique transfer number
+            $transferNo = 'TR-' . date('Y') . '-' . str_pad($i, 3, '0', STR_PAD_LEFT);
+
             StockTransfer::create([
+                'transfer_no' => $transferNo,
                 'from_warehouse_id' => $fromWarehouse,
                 'to_warehouse_id' => $toWarehouse,
                 'transfer_date' => $transferDate,
@@ -42,7 +46,7 @@ class StockTransferSeeder extends Seeder
                 'status' => $status,
             ]);
 
-            $this->command->info("Created stock transfer #{$i}");
+            $this->command->info("Created stock transfer #{$i} with number: {$transferNo}");
         }
 
         $this->command->info('Successfully seeded 10 stock transfers.');

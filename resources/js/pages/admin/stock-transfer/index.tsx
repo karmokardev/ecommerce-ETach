@@ -64,6 +64,10 @@ export default function StockTransfers({ transfers, filters }: StockTransfersPro
         router.get(`/stock-transfers/${transferId}`);
     };
 
+    const handleEdit = (transferId: number) => {
+        router.get(`/stock-transfers/${transferId}/edit`);
+    };
+
     const handleDeleteClick = (transferId: number) => {
         setTransferToDelete(transferId);
         setDeleteModalOpen(true);
@@ -269,8 +273,17 @@ export default function StockTransfers({ transfers, filters }: StockTransfersPro
                                                     <FaEye className="w-4 h-4" />
                                                 </button>
                                                 <button
+                                                    onClick={() => handleEdit(transfer.id)}
+                                                    disabled={transfer.status === 'completed'}
+                                                    className="text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 mr-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Edit"
+                                                >
+                                                    <FaEdit className="w-4 h-4" />
+                                                </button>
+                                                <button
                                                     onClick={() => handleDeleteClick(transfer.id)}
-                                                    className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                                    disabled={transfer.status === 'completed'}
+                                                    className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                     title="Delete"
                                                 >
                                                     <FaTrash className="w-4 h-4" />

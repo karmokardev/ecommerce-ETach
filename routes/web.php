@@ -235,6 +235,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stock-adjustments/create', [StockAdjustmentController::class, 'create'])->name('stock-adjustments.create');
         Route::post('/stock-adjustments', [StockAdjustmentController::class, 'store'])->name('stock-adjustments.store');
         Route::get('/stock-adjustments/{adjustment}', [StockAdjustmentController::class, 'show'])->name('stock-adjustments.show');
+        Route::get('/stock-adjustments/{adjustment}/edit', [StockAdjustmentController::class, 'edit'])->name('stock-adjustments.edit');
+        Route::put('/stock-adjustments/{adjustment}', [StockAdjustmentController::class, 'update'])->name('stock-adjustments.update');
         Route::delete('/stock-adjustments/{adjustment}', [StockAdjustmentController::class, 'destroy'])->name('stock-adjustments.destroy');
 
         // Stock Adjustment API endpoints

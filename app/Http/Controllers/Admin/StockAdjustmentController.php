@@ -151,6 +151,77 @@ class StockAdjustmentController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(StockAdjustment $adjustment)
+    {
+        $adjustment->load(['warehouse', 'variant']);
+        $warehouses = Warehouse::active()->ordered()->get(['id', 'name', 'code']);
+
+        return inertia('admin/stock-adjustment/edit', [
+            'adjustment' => $adjustment,
+            'warehouses' => $warehouses,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, StockAdjustment $adjustment)
+    {
+        $validated = $request->validate([
+            'warehouse_id' => ['required', 'exists:warehouses,id'],
+            'product_variant_id' => ['required', 'exists:product_variants,id'],
+            'adjustment_type' => ['required', 'in:increase,decrease'],
+            'quantity' => ['required', 'integer', 'min:1'],
+            'reason' => ['nullable', 'string', 'max:255'],
+            'notes' => ['nullable', 'string'],
+        ], [
+            'warehouse_id.required' => 'The warehouse is required.',
+            'warehouse_id.exists' => 'The selected warehouse is invalid.',
+            'product_variant_id.required' => 'The product variant is required.',
+            'product_variant_id.exists' => 'The selected variant is invalid.',
+            'adjustment_type.required' => 'The adjustment type is required.',
+            'quantity.required' => 'The quantity is required.',
+            'quantity.min' => 'The quantity must be at least 1.',
+        ]);
+
+        // Sanitize input
+        if (isset($validated['reason'])) {
+            $validated['reason'] = strip_tags($validated['reason']);
+        }
+        if (isset($validated['notes'])) {
+            $validated['notes'] = strip_tags($validated['notes']);
+        }
+
+        try {
+            $warehouse = Warehouse::find($validated['warehouse_id']);
+            $variant = ProductVariant::find($validated['product_variant_id']);
+
+            // Update stock adjustment record
+            $adjustment->update([
+                'warehouse_id' => $validated['warehouse_id'],
+                'product_variant_id' => $validated['product_variant_id'],
+                'adjustment_type' => $validated['adjustment_type'],
+                'quantity' => $validated['quantity'],
+                'reason' => $validated['reason'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            // Note: We don't re-process stock on edit to avoid double adjustments
+            // Stock adjustments should be deleted and recreated if needed
+
+            return redirect()
+                ->route('stock-adjustments.index')
+                ->with('success', 'Stock adjustment updated successfully.');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update stock adjustment: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(StockAdjustment $adjustment)

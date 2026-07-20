@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('stock_transfers', function (Blueprint $table) {
             $table->id();
+            $table->string('transfer_no')->unique();
             $table->foreignId('from_warehouse_id')->constrained('warehouses')->cascadeOnDelete();
             $table->foreignId('to_warehouse_id')->constrained('warehouses')->cascadeOnDelete();
             $table->date('transfer_date');

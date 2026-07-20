@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
+ * @property string $transfer_no
  * @property int $from_warehouse_id
  * @property int $to_warehouse_id
  * @property \Illuminate\Support\Carbon $transfer_date
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockTransferItem> $items
  */
 #[Fillable([
+    'transfer_no',
     'from_warehouse_id',
     'to_warehouse_id',
     'transfer_date',

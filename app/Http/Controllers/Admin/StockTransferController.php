@@ -87,6 +87,7 @@ class StockTransferController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'transfer_no' => ['required', 'string', 'unique:stock_transfers,transfer_no'],
             'from_warehouse_id' => ['required', 'exists:warehouses,id', 'different:to_warehouse_id'],
             'to_warehouse_id' => ['required', 'exists:warehouses,id', 'different:from_warehouse_id'],
             'transfer_date' => ['required', 'date'],
@@ -96,6 +97,8 @@ class StockTransferController extends Controller
             'items.*.product_variant_id' => ['required', 'exists:product_variants,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ], [
+            'transfer_no.required' => 'The transfer number is required.',
+            'transfer_no.unique' => 'The transfer number must be unique.',
             'from_warehouse_id.required' => 'The source warehouse is required.',
             'from_warehouse_id.exists' => 'The selected source warehouse is invalid.',
             'from_warehouse_id.different' => 'Source and destination warehouses must be different.',
@@ -118,6 +121,7 @@ class StockTransferController extends Controller
 
         try {
             $transfer = StockTransfer::create([
+                'transfer_no' => $validated['transfer_no'],
                 'from_warehouse_id' => $validated['from_warehouse_id'],
                 'to_warehouse_id' => $validated['to_warehouse_id'],
                 'transfer_date' => $validated['transfer_date'],
@@ -189,6 +193,7 @@ class StockTransferController extends Controller
         }
 
         $validated = $request->validate([
+            'transfer_no' => ['required', 'string', 'unique:stock_transfers,transfer_no,' . $transfer->id],
             'from_warehouse_id' => ['required', 'exists:warehouses,id', 'different:to_warehouse_id'],
             'to_warehouse_id' => ['required', 'exists:warehouses,id', 'different:from_warehouse_id'],
             'transfer_date' => ['required', 'date'],
@@ -198,6 +203,8 @@ class StockTransferController extends Controller
             'items.*.product_variant_id' => ['required', 'exists:product_variants,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ], [
+            'transfer_no.required' => 'The transfer number is required.',
+            'transfer_no.unique' => 'The transfer number must be unique.',
             'from_warehouse_id.required' => 'The source warehouse is required.',
             'from_warehouse_id.exists' => 'The selected source warehouse is invalid.',
             'from_warehouse_id.different' => 'Source and destination warehouses must be different.',
@@ -220,6 +227,7 @@ class StockTransferController extends Controller
 
         try {
             $transfer->update([
+                'transfer_no' => $validated['transfer_no'],
                 'from_warehouse_id' => $validated['from_warehouse_id'],
                 'to_warehouse_id' => $validated['to_warehouse_id'],
                 'transfer_date' => $validated['transfer_date'],

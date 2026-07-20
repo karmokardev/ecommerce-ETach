@@ -56,6 +56,10 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
         router.get(`/stock-adjustments/${adjustmentId}`);
     };
 
+    const handleEdit = (adjustmentId: number) => {
+        router.get(`/stock-adjustments/${adjustmentId}/edit`);
+    };
+
     const handleDeleteClick = (adjustmentId: number) => {
         setAdjustmentToDelete(adjustmentId);
         setDeleteModalOpen(true);
@@ -250,6 +254,13 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                                     title="View"
                                                 >
                                                     <FaEye className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleEdit(adjustment.id)}
+                                                    className="text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 mr-3 transition-colors"
+                                                    title="Edit"
+                                                >
+                                                    <FaEdit className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteClick(adjustment.id)}

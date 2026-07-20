@@ -218,7 +218,7 @@ class StockService
      */
     public function getVariantMovements(ProductVariant $variant, ?int $limit = null): \Illuminate\Database\Eloquent\Collection
     {
-        $query = StockMovement::with(['warehouse', 'reference'])
+        $query = StockMovement::with(['warehouse'])
             ->where('product_variant_id', $variant->id)
             ->ordered();
 
