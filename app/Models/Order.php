@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -59,6 +60,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'shipped_date',
     'delivered_date',
     'cancelled_date',
+    'shipping_method_id',
+    'shipping_zone_id',
 ])]
 class Order extends Model
 {
@@ -139,6 +142,30 @@ class Order extends Model
     public function returns(): HasMany
     {
         return $this->hasMany(OrderReturn::class);
+    }
+
+    /**
+     * Get the shipping method for the order.
+     */
+    public function shippingMethod(): BelongsTo
+    {
+        return $this->belongsTo(ShippingMethod::class);
+    }
+
+    /**
+     * Get the shipping zone for the order.
+     */
+    public function shippingZone(): BelongsTo
+    {
+        return $this->belongsTo(ShippingZone::class);
+    }
+
+    /**
+     * Get the shipment for the order.
+     */
+    public function shipment(): HasOne
+    {
+        return $this->hasOne(Shipment::class);
     }
 
     /**

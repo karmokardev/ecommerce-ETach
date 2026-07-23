@@ -19,6 +19,9 @@ import StockAdjustmentController from './StockAdjustmentController'
 import StockTransferController from './StockTransferController'
 import OrderController from './OrderController'
 import OrderReturnController from './OrderReturnController'
+import ShippingMethodController from './ShippingMethodController'
+import ShippingZoneController from './ShippingZoneController'
+import ShipmentController from './ShipmentController'
 import ReportsController from './ReportsController'
 
 const Admin = {
@@ -43,6 +46,9 @@ const Admin = {
     StockTransferController: Object.assign(StockTransferController, StockTransferController),
     OrderController: Object.assign(OrderController, OrderController),
     OrderReturnController: Object.assign(OrderReturnController, OrderReturnController),
+    ShippingMethodController: Object.assign(ShippingMethodController, ShippingMethodController),
+    ShippingZoneController: Object.assign(ShippingZoneController, ShippingZoneController),
+    ShipmentController: Object.assign(ShipmentController, ShipmentController),
     ReportsController: Object.assign(ReportsController, ReportsController),
 }
 

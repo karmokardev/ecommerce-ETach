@@ -93,6 +93,8 @@ class OrderController extends Controller
             'payment_method' => ['required', 'in:cash,card,bank_transfer,online'],
             'payment_status' => ['required', 'in:pending,paid,failed,refunded'],
             'notes' => ['nullable', 'string'],
+            'shipping_method_id' => ['nullable', 'exists:shipping_methods,id'],
+            'shipping_zone_id' => ['nullable', 'exists:shipping_zones,id'],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'exists:products,id'],
             'items.*.product_variant_id' => ['nullable', 'exists:product_variants,id'],
@@ -115,11 +117,29 @@ class OrderController extends Controller
         try {
             // Calculate totals
             $subtotal = 0;
+            $itemCount = 0;
             foreach ($validated['items'] as $item) {
                 $subtotal += $item['quantity'] * $item['unit_price'];
+                $itemCount += $item['quantity'];
             }
 
+            // Calculate shipping cost
             $shippingCost = 0;
+            if (!empty($validated['shipping_method_id'])) {
+                $shippingMethod = \App\Models\ShippingMethod::find($validated['shipping_method_id']);
+                if ($shippingMethod) {
+                    $shippingCost = $shippingMethod->calculateCost($subtotal, 0, $itemCount);
+                    
+                    // Add zone rate if zone is selected
+                    if (!empty($validated['shipping_zone_id'])) {
+                        $shippingZone = \App\Models\ShippingZone::find($validated['shipping_zone_id']);
+                        if ($shippingZone) {
+                            $shippingCost = $shippingZone->calculateRate($shippingCost);
+                        }
+                    }
+                }
+            }
+
             $tax = 0;
             $discount = 0;
             $total = $subtotal + $shippingCost + $tax - $discount;
@@ -140,6 +160,8 @@ class OrderController extends Controller
                 'payment_status' => $validated['payment_status'],
                 'status' => 'pending',
                 'notes' => $validated['notes'] ?? null,
+                'shipping_method_id' => $validated['shipping_method_id'] ?? null,
+                'shipping_zone_id' => $validated['shipping_zone_id'] ?? null,
             ]);
 
             // Create order items

@@ -22,6 +22,9 @@ use App\Http\Controllers\Admin\StockTransferController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OrderReturnController;
 use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\ShippingMethodController;
+use App\Http\Controllers\Admin\ShippingZoneController;
+use App\Http\Controllers\Admin\ShipmentController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -282,6 +285,44 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/order-returns/{return}/reject', [OrderReturnController::class, 'reject'])->name('order-returns.reject');
         Route::post('/order-returns/{return}/complete', [OrderReturnController::class, 'complete'])->name('order-returns.complete');
         Route::delete('/order-returns/{return}', [OrderReturnController::class, 'destroy'])->name('order-returns.destroy');
+
+        // shipping methods - admin only
+        Route::get('/shipping/methods', [ShippingMethodController::class, 'index'])->name('shipping.methods.index');
+        Route::get('/shipping/methods/create', [ShippingMethodController::class, 'create'])->name('shipping.methods.create');
+        Route::post('/shipping/methods', [ShippingMethodController::class, 'store'])->name('shipping.methods.store');
+        Route::get('/shipping/methods/{method}/edit', [ShippingMethodController::class, 'edit'])->name('shipping.methods.edit');
+        Route::put('/shipping/methods/{method}', [ShippingMethodController::class, 'update'])->name('shipping.methods.update');
+        Route::delete('/shipping/methods/{method}', [ShippingMethodController::class, 'destroy'])->name('shipping.methods.destroy');
+        Route::patch('/shipping/methods/{method}/toggle-active', [ShippingMethodController::class, 'toggleActive'])->name('shipping.methods.toggle-active');
+
+        // Shipping Method API endpoints
+        Route::get('/api/shipping/methods/active', [ShippingMethodController::class, 'active'])->name('api.shipping.methods.active');
+        Route::post('/api/shipping/methods/calculate-cost', [ShippingMethodController::class, 'calculateCost'])->name('api.shipping.methods.calculate-cost');
+
+        // shipping zones - admin only
+        Route::get('/shipping/zones', [ShippingZoneController::class, 'index'])->name('shipping.zones.index');
+        Route::get('/shipping/zones/create', [ShippingZoneController::class, 'create'])->name('shipping.zones.create');
+        Route::post('/shipping/zones', [ShippingZoneController::class, 'store'])->name('shipping.zones.store');
+        Route::put('/shipping/zones/{zone}', [ShippingZoneController::class, 'update'])->name('shipping.zones.update');
+        Route::delete('/shipping/zones/{zone}', [ShippingZoneController::class, 'destroy'])->name('shipping.zones.destroy');
+        Route::patch('/shipping/zones/{zone}/toggle-active', [ShippingZoneController::class, 'toggleActive'])->name('shipping.zones.toggle-active');
+
+        // Shipping Zone API endpoints
+        Route::get('/api/shipping/zones/active', [ShippingZoneController::class, 'active'])->name('api.shipping.zones.active');
+        Route::get('/api/shipping/zones/find-by-district', [ShippingZoneController::class, 'findByDistrict'])->name('api.shipping.zones.find-by-district');
+        Route::post('/api/shipping/zones/calculate-rate', [ShippingZoneController::class, 'calculateRate'])->name('api.shipping.zones.calculate-rate');
+
+        // shipments - admin only
+        Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
+        Route::get('/shipments/create', [ShipmentController::class, 'create'])->name('shipments.create');
+        Route::post('/shipments', [ShipmentController::class, 'store'])->name('shipments.store');
+        Route::get('/shipments/{shipment}', [ShipmentController::class, 'show'])->name('shipments.show');
+        Route::patch('/shipments/{shipment}/status', [ShipmentController::class, 'updateStatus'])->name('shipments.status');
+        Route::post('/shipments/{shipment}/sync-courier', [ShipmentController::class, 'syncWithCourier'])->name('shipments.sync-courier');
+
+        // Shipment API endpoints
+        Route::post('/api/shipments/track', [ShipmentController::class, 'track'])->name('api.shipments.track');
+        Route::get('/api/shipments/statistics', [ShipmentController::class, 'statistics'])->name('api.shipments.statistics');
 
         // reports - admin only
         Route::get('/reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
