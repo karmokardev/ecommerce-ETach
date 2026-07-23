@@ -25,6 +25,11 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\ShippingMethodController;
 use App\Http\Controllers\Admin\ShippingZoneController;
 use App\Http\Controllers\Admin\ShipmentController;
+use App\Http\Controllers\Admin\PosController;
+use App\Http\Controllers\Admin\ProductReturnController;
+use App\Http\Controllers\Admin\DueCollectionController;
+use App\Http\Controllers\Admin\CustomerAccountController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -326,6 +331,72 @@ Route::middleware(['auth'])->group(function () {
 
         // reports - admin only
         Route::get('/reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
+        Route::get('/reports/due', [ReportsController::class, 'due'])->name('reports.due');
+        Route::get('/reports/returns', [ReportsController::class, 'returns'])->name('reports.returns');
+        Route::get('/reports/collections', [ReportsController::class, 'collections'])->name('reports.collections');
+
+        // POS - admin only
+        Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
+        Route::post('/pos', [PosController::class, 'store'])->name('pos.store');
+        Route::get('/pos/orders', [PosController::class, 'orders'])->name('pos.orders');
+        Route::get('/pos/{order}', [PosController::class, 'show'])->name('pos.show');
+        Route::post('/pos/{order}/cancel', [PosController::class, 'cancel'])->name('pos.cancel');
+        Route::post('/pos/{order}/hold', [PosController::class, 'hold'])->name('pos.hold');
+        Route::post('/pos/{order}/resume', [PosController::class, 'resume'])->name('pos.resume');
+        Route::post('/pos/payment', [PosController::class, 'processPayment'])->name('pos.payment');
+
+        // POS API endpoints
+        Route::get('/api/pos/variant/{variant}', [PosController::class, 'variantDetails'])->name('api.pos.variant');
+        Route::get('/api/pos/search', [PosController::class, 'searchProducts'])->name('api.pos.search');
+        Route::get('/api/pos/statistics', [PosController::class, 'statistics'])->name('api.pos.statistics');
+
+        // Product Returns - admin only
+        Route::get('/product-returns', [ProductReturnController::class, 'index'])->name('product-returns.index');
+        Route::get('/product-returns/create', [ProductReturnController::class, 'create'])->name('product-returns.create');
+        Route::post('/product-returns', [ProductReturnController::class, 'store'])->name('product-returns.store');
+        Route::get('/product-returns/{return}', [ProductReturnController::class, 'show'])->name('product-returns.show');
+        Route::post('/product-returns/{return}/approve', [ProductReturnController::class, 'approve'])->name('product-returns.approve');
+        Route::post('/product-returns/{return}/reject', [ProductReturnController::class, 'reject'])->name('product-returns.reject');
+        Route::post('/product-returns/{return}/complete', [ProductReturnController::class, 'complete'])->name('product-returns.complete');
+
+        // Product Return API endpoints
+        Route::get('/api/product-returns/order-details', [ProductReturnController::class, 'orderDetails'])->name('api.product-returns.order-details');
+        Route::get('/api/product-returns/statistics', [ProductReturnController::class, 'statistics'])->name('api.product-returns.statistics');
+
+        // Due Collections - admin only
+        Route::get('/due-collections', [DueCollectionController::class, 'index'])->name('due-collections.index');
+        Route::get('/due-collections/create', [DueCollectionController::class, 'create'])->name('due-collections.create');
+        Route::post('/due-collections', [DueCollectionController::class, 'store'])->name('due-collections.store');
+        Route::get('/due-collections/{collection}', [DueCollectionController::class, 'show'])->name('due-collections.show');
+
+        // Due Collection API endpoints
+        Route::get('/api/due-collections/customer-due-details', [DueCollectionController::class, 'customerDueDetails'])->name('api.due-collections.customer-due-details');
+        Route::get('/api/due-collections/statistics', [DueCollectionController::class, 'statistics'])->name('api.due-collections.statistics');
+        Route::get('/api/due-collections/due-customers', [DueCollectionController::class, 'dueCustomers'])->name('api.due-collections.due-customers');
+
+        // Customer Accounts - admin only
+        Route::get('/customer-accounts', [CustomerAccountController::class, 'index'])->name('customer-accounts.index');
+        Route::get('/customer-accounts/create', [CustomerAccountController::class, 'create'])->name('customer-accounts.create');
+        Route::post('/customer-accounts', [CustomerAccountController::class, 'store'])->name('customer-accounts.store');
+        Route::get('/customer-accounts/{account}', [CustomerAccountController::class, 'show'])->name('customer-accounts.show');
+        Route::get('/customer-accounts/{account}/edit', [CustomerAccountController::class, 'edit'])->name('customer-accounts.edit');
+        Route::put('/customer-accounts/{account}', [CustomerAccountController::class, 'update'])->name('customer-accounts.update');
+        Route::patch('/customer-accounts/{account}/toggle-status', [CustomerAccountController::class, 'toggleStatus'])->name('customer-accounts.toggle-status');
+
+        // Customer Account API endpoints
+        Route::get('/api/customer-accounts/statistics', [CustomerAccountController::class, 'statistics'])->name('api.customer-accounts.statistics');
+        Route::get('/api/customer-accounts/{account}/transactions', [CustomerAccountController::class, 'transactions'])->name('api.customer-accounts.transactions');
+
+        // Customers - admin only
+        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+        Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+        Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::post('/customers/{customer}/create-account', [CustomerController::class, 'createAccount'])->name('customers.create-account');
+
+        // Customer API endpoints
+        Route::get('/api/customers/statistics', [CustomerController::class, 'statistics'])->name('api.customers.statistics');
+        Route::get('/api/customers/dropdown', [CustomerController::class, 'dropdown'])->name('api.customers.dropdown');
     });
 
 });

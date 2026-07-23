@@ -23,6 +23,11 @@ import ShippingMethodController from './ShippingMethodController'
 import ShippingZoneController from './ShippingZoneController'
 import ShipmentController from './ShipmentController'
 import ReportsController from './ReportsController'
+import PosController from './PosController'
+import ProductReturnController from './ProductReturnController'
+import DueCollectionController from './DueCollectionController'
+import CustomerAccountController from './CustomerAccountController'
+import CustomerController from './CustomerController'
 
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -50,6 +55,11 @@ const Admin = {
     ShippingZoneController: Object.assign(ShippingZoneController, ShippingZoneController),
     ShipmentController: Object.assign(ShipmentController, ShipmentController),
     ReportsController: Object.assign(ReportsController, ReportsController),
+    PosController: Object.assign(PosController, PosController),
+    ProductReturnController: Object.assign(ProductReturnController, ProductReturnController),
+    DueCollectionController: Object.assign(DueCollectionController, DueCollectionController),
+    CustomerAccountController: Object.assign(CustomerAccountController, CustomerAccountController),
+    CustomerController: Object.assign(CustomerController, CustomerController),
 }
 
 export default Admin

@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags, Truck, Warehouse, ArrowUpDown, FileText, BarChart3, ShoppingCart, RotateCcw, TrendingUp, MapPin, PackageSearch } from 'lucide-react';
+import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags, Truck, Warehouse, ArrowUpDown, FileText, BarChart3, ShoppingCart, RotateCcw, TrendingUp, MapPin, PackageSearch, Store, DollarSign, Undo2 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -45,12 +45,38 @@ const navItemsByRole: Record<string, NavItem[]> = {
             ]
         },
         {
-            title: 'Order Management',
+            title: 'Sales Management',
             icon: ShoppingCart,
             items: [
+                { title: 'POS System', href: '/pos', icon: Store },
                 { title: 'Orders', href: '/orders', icon: ShoppingCart },
                 { title: 'Order Returns', href: '/order-returns', icon: RotateCcw },
+                { title: 'Due Collections', href: '/due-collections', icon: DollarSign },
+            ]
+        },
+        {
+            title: 'Reports',
+            icon: BarChart3,
+            items: [
                 { title: 'Sales Reports', href: '/reports/sales', icon: TrendingUp },
+                { title: 'Due Reports', href: '/reports/due', icon: DollarSign },
+                { title: 'Return Reports', href: '/reports/returns', icon: Undo2 },
+                { title: 'Collection Reports', href: '/reports/collections', icon: DollarSign },
+            ]
+        },
+        {
+            title: 'Returns Management',
+            icon: Undo2,
+            items: [
+                { title: 'Product Returns', href: '/product-returns', icon: Undo2 },
+            ]
+        },
+        {
+            title: 'Customer Management',
+            icon: Users,
+            items: [
+                { title: 'Customers', href: '/customers', icon: Users },
+                { title: 'Customer Accounts', href: '/customer-accounts', icon: DollarSign },
             ]
         },
         {

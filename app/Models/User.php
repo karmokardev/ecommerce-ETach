@@ -95,4 +95,17 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->hasOne(Membership::class);
     }
+
+    public function customerAccount()
+    {
+        return $this->hasOne(CustomerAccount::class);
+    }
+
+    /**
+     * Scope to order by created_at (newest first).
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
 }

@@ -197,4 +197,186 @@ class ReportsController extends Controller
             })
             ->toArray();
     }
+
+    /**
+     * Display the due sales reports dashboard.
+     */
+    public function due(Request $request)
+    {
+        $period = $request->input('period', 'monthly');
+
+        $startDate = match($period) {
+            'daily' => now()->startOfDay(),
+            'weekly' => now()->startOfWeek(),
+            'monthly' => now()->startOfMonth(),
+            'yearly' => now()->startOfYear(),
+            default => now()->startOfMonth(),
+        };
+
+        $endDate = now();
+
+        // Due statistics
+        $totalDueCustomers = \App\Models\CustomerAccount::withDue()->count();
+        $totalDueAmount = \App\Models\CustomerAccount::withDue()->sum('total_due');
+        $totalCreditLimit = \App\Models\CustomerAccount::sum('credit_limit');
+
+        // New due in period
+        $newDueInPeriod = \App\Models\PosOrder::whereBetween('created_at', [$startDate, $endDate])
+            ->where('payment_status', '!=', 'paid')
+            ->sum('due_amount');
+
+        // Collections in period
+        $collectionsInPeriod = \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])
+            ->sum('amount');
+
+        // Top due customers
+        $topDueCustomers = \App\Models\CustomerAccount::withDue()
+            ->with('user')
+            ->orderBy('total_due', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($account) {
+                return [
+                    'name' => $account->user->name,
+                    'phone' => $account->user->phone,
+                    'total_due' => $account->total_due,
+                    'credit_limit' => $account->credit_limit,
+                ];
+            });
+
+        return inertia('admin/reports/due', [
+            'period' => $period,
+            'startDate' => $startDate->toDateString(),
+            'endDate' => $endDate->toDateString(),
+            'statistics' => [
+                'total_due_customers' => $totalDueCustomers,
+                'total_due_amount' => $totalDueAmount,
+                'total_credit_limit' => $totalCreditLimit,
+                'new_due_in_period' => $newDueInPeriod,
+                'collections_in_period' => $collectionsInPeriod,
+            ],
+            'topDueCustomers' => $topDueCustomers,
+        ]);
+    }
+
+    /**
+     * Display the return reports dashboard.
+     */
+    public function returns(Request $request)
+    {
+        $period = $request->input('period', 'monthly');
+
+        $startDate = match($period) {
+            'daily' => now()->startOfDay(),
+            'weekly' => now()->startOfWeek(),
+            'monthly' => now()->startOfMonth(),
+            'yearly' => now()->startOfYear(),
+            default => now()->startOfMonth(),
+        };
+
+        $endDate = now();
+
+        // Return statistics
+        $totalReturns = \App\Models\ProductReturn::whereBetween('created_at', [$startDate, $endDate])->count();
+        $pendingReturns = \App\Models\ProductReturn::pending()->count();
+        $approvedReturns = \App\Models\ProductReturn::where('status', 'approved')->count();
+        $completedReturns = \App\Models\ProductReturn::where('status', 'completed')->count();
+        $totalRefundAmount = \App\Models\ProductReturn::where('status', 'completed')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('refund_amount');
+
+        // Return type breakdown
+        $returnTypeBreakdown = [
+            'refund' => \App\Models\ProductReturn::whereBetween('created_at', [$startDate, $endDate])
+                ->where('return_type', 'refund')->count(),
+            'exchange' => \App\Models\ProductReturn::whereBetween('created_at', [$startDate, $endDate])
+                ->where('return_type', 'exchange')->count(),
+        ];
+
+        // Recent returns
+        $recentReturns = \App\Models\ProductReturn::with(['user', 'items'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return inertia('admin/reports/returns', [
+            'period' => $period,
+            'startDate' => $startDate->toDateString(),
+            'endDate' => $endDate->toDateString(),
+            'statistics' => [
+                'total_returns' => $totalReturns,
+                'pending_returns' => $pendingReturns,
+                'approved_returns' => $approvedReturns,
+                'completed_returns' => $completedReturns,
+                'total_refund_amount' => $totalRefundAmount,
+                'return_type_breakdown' => $returnTypeBreakdown,
+            ],
+            'recentReturns' => $recentReturns,
+        ]);
+    }
+
+    /**
+     * Display the collection reports dashboard.
+     */
+    public function collections(Request $request)
+    {
+        $period = $request->input('period', 'monthly');
+
+        $startDate = match($period) {
+            'daily' => now()->startOfDay(),
+            'weekly' => now()->startOfWeek(),
+            'monthly' => now()->startOfMonth(),
+            'yearly' => now()->startOfYear(),
+            default => now()->startOfMonth(),
+        };
+
+        $endDate = now();
+
+        // Collection statistics
+        $totalCollections = \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])->count();
+        $totalCollectedAmount = \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])
+            ->sum('amount');
+
+        // Payment method breakdown
+        $paymentMethodBreakdown = [
+            'cash' => \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])
+                ->where('payment_method', 'cash')->count(),
+            'card' => \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])
+                ->where('payment_method', 'card')->count(),
+            'bkash' => \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])
+                ->where('payment_method', 'bkash')->count(),
+            'nagad' => \App\Models\DueCollection::whereBetween('created_at', [$startDate, $endDate])
+                ->where('payment_method', 'nagad')->count(),
+        ];
+
+        // Top collectors
+        $topCollectors = \App\Models\DueCollection::with('collector')
+            ->select('collected_by', \DB::raw('COUNT(*) as collection_count'), \DB::raw('SUM(amount) as total_collected'))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('collected_by')
+            ->orderBy('total_collected', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Recent collections
+        $recentCollections = \App\Models\DueCollection::with(['user', 'collector'])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return inertia('admin/reports/collections', [
+            'period' => $period,
+            'startDate' => $startDate->toDateString(),
+            'endDate' => $endDate->toDateString(),
+            'statistics' => [
+                'total_collections' => $totalCollections,
+                'total_collected_amount' => $totalCollectedAmount,
+                'payment_method_breakdown' => $paymentMethodBreakdown,
+            ],
+            'topCollectors' => $topCollectors,
+            'recentCollections' => $recentCollections,
+        ]);
+    }
 }
