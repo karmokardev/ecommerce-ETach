@@ -43,17 +43,25 @@ class StockAdjustmentSeeder extends Seeder
             $adjustmentType = rand(0, 1) ? 'increase' : 'decrease';
             $quantity = rand(1, 50);
             $reason = $reasons[array_rand($reasons)];
+            
+            // Calculate before and after stock
+            $beforeStock = rand(0, 200);
+            $afterStock = $adjustmentType === 'increase' 
+                ? $beforeStock + $quantity 
+                : max(0, $beforeStock - $quantity);
 
             StockAdjustment::create([
                 'warehouse_id' => $warehouse,
                 'product_variant_id' => $variant,
                 'adjustment_type' => $adjustmentType,
                 'quantity' => $quantity,
+                'before_stock' => $beforeStock,
+                'after_stock' => $afterStock,
                 'reason' => $reason,
                 'notes' => 'Stock adjustment #' . $i . ' - ' . $reason,
             ]);
 
-            $this->command->info("Created stock adjustment #{$i}: {$adjustmentType} of {$quantity} units");
+            $this->command->info("Created stock adjustment #{$i}: {$adjustmentType} of {$quantity} units (Before: {$beforeStock}, After: {$afterStock})");
         }
 
         $this->command->info('Successfully seeded 20 stock adjustments.');

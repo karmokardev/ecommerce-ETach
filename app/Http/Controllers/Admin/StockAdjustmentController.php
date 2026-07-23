@@ -84,6 +84,8 @@ class StockAdjustmentController extends Controller
             'product_variant_id' => ['required', 'exists:product_variants,id'],
             'adjustment_type' => ['required', 'in:increase,decrease'],
             'quantity' => ['required', 'integer', 'min:1'],
+            'before_stock' => ['required', 'integer', 'min:0'],
+            'after_stock' => ['required', 'integer', 'min:0'],
             'reason' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
         ], [
@@ -94,6 +96,8 @@ class StockAdjustmentController extends Controller
             'adjustment_type.required' => 'The adjustment type is required.',
             'quantity.required' => 'The quantity is required.',
             'quantity.min' => 'The quantity must be at least 1.',
+            'before_stock.required' => 'The before stock is required.',
+            'after_stock.required' => 'The after stock is required.',
         ]);
 
         // Sanitize input
@@ -114,6 +118,8 @@ class StockAdjustmentController extends Controller
                 'product_variant_id' => $validated['product_variant_id'],
                 'adjustment_type' => $validated['adjustment_type'],
                 'quantity' => $validated['quantity'],
+                'before_stock' => $validated['before_stock'],
+                'after_stock' => $validated['after_stock'],
                 'reason' => $validated['reason'] ?? null,
                 'notes' => $validated['notes'] ?? null,
             ]);
@@ -174,6 +180,8 @@ class StockAdjustmentController extends Controller
             'product_variant_id' => ['required', 'exists:product_variants,id'],
             'adjustment_type' => ['required', 'in:increase,decrease'],
             'quantity' => ['required', 'integer', 'min:1'],
+            'before_stock' => ['required', 'integer', 'min:0'],
+            'after_stock' => ['required', 'integer', 'min:0'],
             'reason' => ['nullable', 'string', 'max:255'],
             'notes' => ['nullable', 'string'],
         ], [
@@ -184,6 +192,8 @@ class StockAdjustmentController extends Controller
             'adjustment_type.required' => 'The adjustment type is required.',
             'quantity.required' => 'The quantity is required.',
             'quantity.min' => 'The quantity must be at least 1.',
+            'before_stock.required' => 'The before stock is required.',
+            'after_stock.required' => 'The after stock is required.',
         ]);
 
         // Sanitize input
@@ -204,6 +214,8 @@ class StockAdjustmentController extends Controller
                 'product_variant_id' => $validated['product_variant_id'],
                 'adjustment_type' => $validated['adjustment_type'],
                 'quantity' => $validated['quantity'],
+                'before_stock' => $validated['before_stock'],
+                'after_stock' => $validated['after_stock'],
                 'reason' => $validated['reason'] ?? null,
                 'notes' => $validated['notes'] ?? null,
             ]);

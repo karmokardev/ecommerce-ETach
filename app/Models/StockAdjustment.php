@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $product_variant_id
  * @property string $adjustment_type
  * @property int $quantity
+ * @property int $before_stock
+ * @property int $after_stock
  * @property string|null $reason
  * @property string|null $notes
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -27,6 +29,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'product_variant_id',
     'adjustment_type',
     'quantity',
+    'before_stock',
+    'after_stock',
     'reason',
     'notes',
 ])]

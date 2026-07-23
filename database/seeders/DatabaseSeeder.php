@@ -34,5 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call(StockTransferSeeder::class);
         $this->call(StockTransferItemSeeder::class);
         $this->call(StockMovementSeeder::class);
+        $this->call(OrderSeeder::class);
+        $this->call(OrderItemSeeder::class);
+        $this->call(OrderReturnSeeder::class);
     }
 }

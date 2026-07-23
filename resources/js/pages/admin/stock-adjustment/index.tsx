@@ -15,7 +15,7 @@ interface StockAdjustment {
     after_stock: number;
     reason: string | null;
     created_at: string;
-    product_variant?: {
+    variant?: {
         id: number;
         sku: string;
         product?: {
@@ -201,13 +201,12 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                             className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                         />
                                     </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">SKU</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">SKU / Product</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Warehouse</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quantity</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Before</th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">After</th>
+                                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Quantity</th>
+                                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Before</th>
+                                    <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">After</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -224,10 +223,8 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                                 />
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                                {adjustment.product_variant?.sku || '-'}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                                {adjustment.product_variant?.product?.name || '-'}
+                                                <div className="font-medium">SKU: {adjustment.variant?.sku || '-'}</div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">Product: {adjustment.variant?.product?.name || '-'}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 <div className='font-bold'>{adjustment.warehouse?.name || '-'}</div>
@@ -238,13 +235,13 @@ export default function StockAdjustments({ adjustments, filters }: StockAdjustme
                                                     {adjustment.adjustment_type === 'increase' ? 'Increase' : 'Decrease'}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="px-2 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                                 {adjustment.quantity}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 {adjustment.before_stock}
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                            <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                                 {adjustment.after_stock}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">

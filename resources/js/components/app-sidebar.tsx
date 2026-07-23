@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags, Truck, Warehouse, ArrowUpDown, FileText, BarChart3 } from 'lucide-react';
+import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags, Truck, Warehouse, ArrowUpDown, FileText, BarChart3, ShoppingCart, RotateCcw, TrendingUp } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -42,6 +42,15 @@ const navItemsByRole: Record<string, NavItem[]> = {
                 { title: 'Stock Adjustments', href: '/stock-adjustments', icon: ArrowUpDown },
                 { title: 'Stock Transfers', href: '/stock-transfers', icon: Boxes },
                 { title: 'Low Stock Report', href: '/product-variants/low-stock', icon: BarChart3 },
+            ]
+        },
+        {
+            title: 'Order Management',
+            icon: ShoppingCart,
+            items: [
+                { title: 'Orders', href: '/orders', icon: ShoppingCart },
+                { title: 'Order Returns', href: '/order-returns', icon: RotateCcw },
+                { title: 'Sales Reports', href: '/reports/sales', icon: TrendingUp },
             ]
         },
         { title: 'Roles', href: '/roles', icon: Shield },

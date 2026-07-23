@@ -19,6 +19,9 @@ use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\PurchaseController;
 use App\Http\Controllers\Admin\StockAdjustmentController;
 use App\Http\Controllers\Admin\StockTransferController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OrderReturnController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -254,6 +257,34 @@ Route::middleware(['auth'])->group(function () {
 
         // Stock Transfer API endpoints
         Route::get('/api/stock-transfers/variants', [StockTransferController::class, 'variants'])->name('api.stock-transfers.variants');
+
+        // orders - admin only
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+        Route::patch('/orders/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('orders.payment-status');
+        Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+        Route::get('/orders/{order}/packing-slip', [OrderController::class, 'packingSlip'])->name('orders.packing-slip');
+
+        // Order API endpoints
+        Route::get('/api/orders/products', [OrderController::class, 'products'])->name('api.orders.products');
+        Route::get('/api/orders/variants/{variant}', [OrderController::class, 'variantDetails'])->name('api.orders.variants.details');
+        Route::get('/api/orders/statistics', [OrderController::class, 'statistics'])->name('api.orders.statistics');
+
+        // order returns - admin only
+        Route::get('/order-returns', [OrderReturnController::class, 'index'])->name('order-returns.index');
+        Route::get('/order-returns/{return}', [OrderReturnController::class, 'show'])->name('order-returns.show');
+        Route::post('/order-returns/{return}/approve', [OrderReturnController::class, 'approve'])->name('order-returns.approve');
+        Route::post('/order-returns/{return}/reject', [OrderReturnController::class, 'reject'])->name('order-returns.reject');
+        Route::post('/order-returns/{return}/complete', [OrderReturnController::class, 'complete'])->name('order-returns.complete');
+        Route::delete('/order-returns/{return}', [OrderReturnController::class, 'destroy'])->name('order-returns.destroy');
+
+        // reports - admin only
+        Route::get('/reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
     });
 
 });

@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('product_variant_id')->constrained('product_variants')->cascadeOnDelete();
             $table->enum('adjustment_type', ['increase', 'decrease']);
             $table->integer('quantity');
+            $table->integer('before_stock')->default(0);
+            $table->integer('after_stock')->default(0);
             $table->string('reason')->nullable();
             $table->text('notes')->nullable();
             $table->softDeletes();
