@@ -39,5 +39,9 @@ class DatabaseSeeder extends Seeder
         $this->call(OrderReturnSeeder::class);
         $this->call(PosOrderSeeder::class);
         $this->call(ProductReturnSeeder::class);
+        $this->call(CouponSeeder::class);
+        $this->call(FlashSaleSeeder::class);
+        $this->call(ProductReviewSeeder::class);
+        $this->call(EmailCampaignSeeder::class);
     }
 }

@@ -30,6 +30,10 @@ use App\Http\Controllers\Admin\ProductReturnController;
 use App\Http\Controllers\Admin\DueCollectionController;
 use App\Http\Controllers\Admin\CustomerAccountController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\FlashSaleController;
+use App\Http\Controllers\Admin\ProductReviewController;
+use App\Http\Controllers\Admin\EmailCampaignController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
@@ -397,6 +401,47 @@ Route::middleware(['auth'])->group(function () {
         // Customer API endpoints
         Route::get('/api/customers/statistics', [CustomerController::class, 'statistics'])->name('api.customers.statistics');
         Route::get('/api/customers/dropdown', [CustomerController::class, 'dropdown'])->name('api.customers.dropdown');
+
+        // Coupons - admin only
+        Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
+        Route::get('/coupons/create', [CouponController::class, 'create'])->name('coupons.create');
+        Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store');
+        Route::get('/coupons/{coupon}', [CouponController::class, 'show'])->name('coupons.show');
+        Route::get('/coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
+        Route::put('/coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
+        Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+        Route::patch('/coupons/{coupon}/toggle-status', [CouponController::class, 'toggleStatus'])->name('coupons.toggle-status');
+
+        // Flash Sales - admin only
+        Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
+        Route::get('/flash-sales/create', [FlashSaleController::class, 'create'])->name('flash-sales.create');
+        Route::post('/flash-sales', [FlashSaleController::class, 'store'])->name('flash-sales.store');
+        Route::get('/flash-sales/{flashSale}', [FlashSaleController::class, 'show'])->name('flash-sales.show');
+        Route::get('/flash-sales/{flashSale}/edit', [FlashSaleController::class, 'edit'])->name('flash-sales.edit');
+        Route::put('/flash-sales/{flashSale}', [FlashSaleController::class, 'update'])->name('flash-sales.update');
+        Route::delete('/flash-sales/{flashSale}', [FlashSaleController::class, 'destroy'])->name('flash-sales.destroy');
+        Route::patch('/flash-sales/{flashSale}/toggle-status', [FlashSaleController::class, 'toggleStatus'])->name('flash-sales.toggle-status');
+        Route::post('/flash-sales/{flashSale}/add-product', [FlashSaleController::class, 'addProduct'])->name('flash-sales.add-product');
+        Route::delete('/flash-sales/{flashSale}/products/{flashSaleProduct}', [FlashSaleController::class, 'removeProduct'])->name('flash-sales.remove-product');
+
+        // Product Reviews - admin only
+        Route::get('/reviews', [ProductReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/reviews/{review}', [ProductReviewController::class, 'show'])->name('reviews.show');
+        Route::post('/reviews/{review}/approve', [ProductReviewController::class, 'approve'])->name('reviews.approve');
+        Route::post('/reviews/{review}/reject', [ProductReviewController::class, 'reject'])->name('reviews.reject');
+        Route::delete('/reviews/{review}', [ProductReviewController::class, 'destroy'])->name('reviews.destroy');
+        Route::post('/reviews/{review}/mark-helpful', [ProductReviewController::class, 'markHelpful'])->name('reviews.mark-helpful');
+
+        // Email Campaigns - admin only
+        Route::get('/email-campaigns', [EmailCampaignController::class, 'index'])->name('email-campaigns.index');
+        Route::get('/email-campaigns/create', [EmailCampaignController::class, 'create'])->name('email-campaigns.create');
+        Route::post('/email-campaigns', [EmailCampaignController::class, 'store'])->name('email-campaigns.store');
+        Route::get('/email-campaigns/{campaign}', [EmailCampaignController::class, 'show'])->name('email-campaigns.show');
+        Route::get('/email-campaigns/{campaign}/edit', [EmailCampaignController::class, 'edit'])->name('email-campaigns.edit');
+        Route::put('/email-campaigns/{campaign}', [EmailCampaignController::class, 'update'])->name('email-campaigns.update');
+        Route::delete('/email-campaigns/{campaign}', [EmailCampaignController::class, 'destroy'])->name('email-campaigns.destroy');
+        Route::post('/email-campaigns/{campaign}/send', [EmailCampaignController::class, 'send'])->name('email-campaigns.send');
+        Route::post('/email-campaigns/{campaign}/cancel', [EmailCampaignController::class, 'cancel'])->name('email-campaigns.cancel');
     });
 
 });

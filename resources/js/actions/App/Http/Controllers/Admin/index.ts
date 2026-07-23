@@ -28,6 +28,10 @@ import ProductReturnController from './ProductReturnController'
 import DueCollectionController from './DueCollectionController'
 import CustomerAccountController from './CustomerAccountController'
 import CustomerController from './CustomerController'
+import CouponController from './CouponController'
+import FlashSaleController from './FlashSaleController'
+import ProductReviewController from './ProductReviewController'
+import EmailCampaignController from './EmailCampaignController'
 
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -60,6 +64,10 @@ const Admin = {
     DueCollectionController: Object.assign(DueCollectionController, DueCollectionController),
     CustomerAccountController: Object.assign(CustomerAccountController, CustomerAccountController),
     CustomerController: Object.assign(CustomerController, CustomerController),
+    CouponController: Object.assign(CouponController, CouponController),
+    FlashSaleController: Object.assign(FlashSaleController, FlashSaleController),
+    ProductReviewController: Object.assign(ProductReviewController, ProductReviewController),
+    EmailCampaignController: Object.assign(EmailCampaignController, EmailCampaignController),
 }
 
 export default Admin

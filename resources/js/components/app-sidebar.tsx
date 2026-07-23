@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags, Truck, Warehouse, ArrowUpDown, FileText, BarChart3, ShoppingCart, RotateCcw, TrendingUp, MapPin, PackageSearch, Store, DollarSign, Undo2 } from 'lucide-react';
+import { LayoutGrid, Users, Shield, PenSquare, BookOpen, GraduationCap, Heart, CheckCircle, Palette, Settings, Type, Package, Boxes, Tag, SlidersHorizontal, Tags, Truck, Warehouse, ArrowUpDown, FileText, BarChart3, ShoppingCart, RotateCcw, TrendingUp, MapPin, PackageSearch, Store, DollarSign, Undo2, Ticket, Zap, Star, Mail, Clock } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -69,6 +69,16 @@ const navItemsByRole: Record<string, NavItem[]> = {
             icon: Undo2,
             items: [
                 { title: 'Product Returns', href: '/product-returns', icon: Undo2 },
+            ]
+        },
+        {
+            title: 'Marketing',
+            icon: Ticket,
+            items: [
+                { title: 'Coupons', href: '/coupons', icon: Ticket },
+                { title: 'Flash Sales', href: '/flash-sales', icon: Zap },
+                { title: 'Product Reviews', href: '/reviews', icon: Star },
+                { title: 'Email Campaigns', href: '/email-campaigns', icon: Mail },
             ]
         },
         {
