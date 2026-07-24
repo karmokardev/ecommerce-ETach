@@ -34,7 +34,9 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\FlashSaleController;
 use App\Http\Controllers\Admin\ProductReviewController;
 use App\Http\Controllers\Admin\EmailCampaignController;
+use App\Http\Controllers\Admin\WishlistController as AdminWishlistController;
 use App\Http\Controllers\Frontand\HomeController;
+use App\Http\Controllers\Frontand\WishlistController as FrontendWishlistController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\Admin\MembershipApprovalController;
@@ -442,6 +444,15 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/email-campaigns/{campaign}', [EmailCampaignController::class, 'destroy'])->name('email-campaigns.destroy');
         Route::post('/email-campaigns/{campaign}/send', [EmailCampaignController::class, 'send'])->name('email-campaigns.send');
         Route::post('/email-campaigns/{campaign}/cancel', [EmailCampaignController::class, 'cancel'])->name('email-campaigns.cancel');
+
+        // Wishlists - admin only
+        Route::get('/wishlists', [AdminWishlistController::class, 'index'])->name('wishlists.index');
+        Route::get('/wishlists/{wishlist}', [AdminWishlistController::class, 'show'])->name('wishlists.show');
+        Route::delete('/wishlists/{wishlist}', [AdminWishlistController::class, 'destroy'])->name('wishlists.destroy');
+        Route::post('/wishlists/bulk-delete', [AdminWishlistController::class, 'bulkDelete'])->name('wishlists.bulk-delete');
+
+        // Wishlist API endpoints
+        Route::get('/api/wishlists/statistics', [AdminWishlistController::class, 'statistics'])->name('api.wishlists.statistics');
     });
 
 });
@@ -456,5 +467,16 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/');
 })->name('logout');
+
+// Frontend Wishlist Routes (authenticated users)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wishlist', [FrontendWishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist', [FrontendWishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{id}', [FrontendWishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::post('/wishlist/check', [FrontendWishlistController::class, 'check'])->name('wishlist.check');
+    Route::get('/wishlist/count', [FrontendWishlistController::class, 'count'])->name('wishlist.count');
+    Route::post('/wishlist/{id}/move-to-cart', [FrontendWishlistController::class, 'moveToCart'])->name('wishlist.move-to-cart');
+    Route::post('/wishlist/clear', [FrontendWishlistController::class, 'clear'])->name('wishlist.clear');
+});
 
 require __DIR__ . '/settings.php';

@@ -32,6 +32,7 @@ import CouponController from './CouponController'
 import FlashSaleController from './FlashSaleController'
 import ProductReviewController from './ProductReviewController'
 import EmailCampaignController from './EmailCampaignController'
+import WishlistController from './WishlistController'
 
 const Admin = {
     DashboardController: Object.assign(DashboardController, DashboardController),
@@ -68,6 +69,7 @@ const Admin = {
     FlashSaleController: Object.assign(FlashSaleController, FlashSaleController),
     ProductReviewController: Object.assign(ProductReviewController, ProductReviewController),
     EmailCampaignController: Object.assign(EmailCampaignController, EmailCampaignController),
+    WishlistController: Object.assign(WishlistController, WishlistController),
 }
 
 export default Admin

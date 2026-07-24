@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { Link, usePage } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -11,12 +11,27 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, Badge } from 'lucide-react';
 import type { NavItem } from '@/types';
 
 export function NavMain({ items = [] }: { items: NavItem[] }) {
     const { isCurrentUrl } = useCurrentUrl();
     const [openItems, setOpenItems] = useState<Set<string>>(new Set());
+    const [wishlistCount, setWishlistCount] = useState<number>(0);
+
+    useEffect(() => {
+        fetchWishlistCount();
+    }, []);
+
+    const fetchWishlistCount = async () => {
+        try {
+            const response = await fetch('/api/wishlists/statistics');
+            const data = await response.json();
+            setWishlistCount(data.total || 0);
+        } catch (error) {
+            console.error('Error fetching wishlist count:', error);
+        }
+    };
 
     const toggleItem = (title: string) => {
         const newOpenItems = new Set(openItems);
@@ -60,6 +75,11 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
                                                     <Link href={subItem.href || '#'} prefetch>
                                                         {subItem.icon && <subItem.icon />}
                                                         <span>{subItem.title}</span>
+                                                        {subItem.showCount && subItem.title === 'Wishlists' && wishlistCount > 0 && (
+                                                            <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
+                                                                {wishlistCount}
+                                                            </span>
+                                                        )}
                                                     </Link>
                                                 </SidebarMenuSubButton>
                                             </SidebarMenuSubItem>
