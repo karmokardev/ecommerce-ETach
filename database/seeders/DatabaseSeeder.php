@@ -43,5 +43,7 @@ class DatabaseSeeder extends Seeder
         $this->call(FlashSaleSeeder::class);
         $this->call(ProductReviewSeeder::class);
         $this->call(EmailCampaignSeeder::class);
+        $this->call(WishlistSeeder::class);
+        $this->call(CartSeeder::class);
     }
 }

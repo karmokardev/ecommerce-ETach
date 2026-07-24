@@ -87,6 +87,7 @@ const navItemsByRole: Record<string, NavItem[]> = {
             items: [
                 { title: 'Customers', href: '/customers', icon: Users },
                 { title: 'Customer Accounts', href: '/customer-accounts', icon: DollarSign },
+                { title: 'Carts', href: '/carts', icon: ShoppingCart },
                 { title: 'Wishlists', href: '/wishlists', icon: Heart, showCount: true },
             ]
         },
