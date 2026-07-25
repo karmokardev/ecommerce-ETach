@@ -103,6 +103,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/settings/footer', [SiteSettingsController::class, 'footer'])->name('admin.settings.footer');
         Route::put('/admin/settings/footer', [SiteSettingsController::class, 'updateFooter'])->name('admin.settings.footer.update');
 
+        Route::get('/admin/settings/hero', [SiteSettingsController::class, 'hero'])->name('admin.settings.hero');
+        Route::post('/admin/settings/hero', [SiteSettingsController::class, 'updateHero'])->name('admin.settings.hero.update');
+        Route::post('/admin/settings/hero/upload-image', [SiteSettingsController::class, 'uploadHeroImage'])->name('admin.settings.hero.upload-image');
+        Route::delete('/admin/settings/hero/banner-image', [SiteSettingsController::class, 'deleteHeroBannerImage'])->name('admin.settings.hero.delete-image');
+
         // categories - admin only
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
@@ -484,9 +489,9 @@ Route::post('/logout', function () {
     request()->session()->invalidate();
     request()->session()->regenerateToken();
     return redirect('/');
-})->name('logout');
+})->middleware('auth')->name('logout');
 
-// Frontend Wishlist Routes (authenticated users)
+// Frontend Wishlist Routes (authenticated users only)
 Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist', [FrontendWishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist', [FrontendWishlistController::class, 'store'])->name('wishlist.store');

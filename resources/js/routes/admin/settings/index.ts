@@ -3,6 +3,7 @@ import general5d934c from './general'
 import logoFavicon8e0c49 from './logo-favicon'
 import typographyB4beaf from './typography'
 import footer42f611 from './footer'
+import hero30f193 from './hero'
 /**
 * @see \App\Http\Controllers\Admin\SiteSettingsController::general
 * @see app/Http/Controllers/Admin/SiteSettingsController.php:15
@@ -327,11 +328,93 @@ footerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => (
 
 footer.form = footerForm
 
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+export const hero = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: hero.url(options),
+    method: 'get',
+})
+
+hero.definition = {
+    methods: ["get","head"],
+    url: '/admin/settings/hero',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+hero.url = (options?: RouteQueryOptions) => {
+    return hero.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+hero.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: hero.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+hero.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: hero.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+const heroForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hero.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+heroForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hero.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+heroForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hero.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+hero.form = heroForm
+
 const settings = {
     general: Object.assign(general, general5d934c),
     logoFavicon: Object.assign(logoFavicon, logoFavicon8e0c49),
     typography: Object.assign(typography, typographyB4beaf),
     footer: Object.assign(footer, footer42f611),
+    hero: Object.assign(hero, hero30f193),
 }
 
 export default settings

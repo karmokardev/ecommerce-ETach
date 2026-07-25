@@ -292,4 +292,107 @@ class SiteSettingsController extends Controller
 
         return back()->with('success', 'Footer settings updated successfully.');
     }
+
+    /**
+     * Display hero settings
+     */
+    public function hero()
+    {
+        $sliderImagesJson = Setting::get('hero_slider_images', '[]');
+        $sliderImages = json_decode($sliderImagesJson, true) ?: [];
+        
+        $settings = [
+            'slider_images' => $sliderImages,
+            'slider_enabled' => Setting::get('hero_slider_enabled', 'false'),
+            'auto_slide_interval' => (int) Setting::get('hero_auto_slide_interval', 3000),
+        ];
+        
+        return inertia('admin/settings/hero/index', [
+            'settings' => $settings,
+        ]);
+    }
+
+    /**
+     * Update hero settings
+     */
+    public function updateHero(Request $request)
+    {
+        $sliderEnabled = $request->input('slider_enabled');
+        $autoSlideInterval = $request->input('auto_slide_interval');
+        $sliderImagesJson = $request->input('slider_images');
+
+        // Save slider enabled
+        if ($sliderEnabled !== null) {
+            Setting::updateOrCreate(
+                ['key' => 'hero_slider_enabled'],
+                ['value' => $sliderEnabled, 'type' => 'boolean', 'status' => 'active']
+            );
+        }
+
+        // Save auto slide interval
+        if ($autoSlideInterval !== null) {
+            Setting::updateOrCreate(
+                ['key' => 'hero_auto_slide_interval'],
+                ['value' => $autoSlideInterval, 'type' => 'number', 'status' => 'active']
+            );
+        }
+
+        // Save slider images
+        if ($sliderImagesJson !== null) {
+            Setting::updateOrCreate(
+                ['key' => 'hero_slider_images'],
+                ['value' => $sliderImagesJson, 'type' => 'json', 'status' => 'active']
+            );
+        }
+
+        return back()->with('success', 'Hero settings updated successfully.');
+    }
+
+    /**
+     * Upload hero slider image
+     */
+    public function uploadHeroImage(Request $request)
+    {
+        $validated = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $path = $request->file('image')->store('hero-slider', 'public');
+        $imageUrl = '/storage/' . $path;
+
+        return response()->json([
+            'image_url' => $imageUrl,
+        ]);
+    }
+
+    /**
+     * Delete hero banner image
+     */
+    public function deleteHeroBannerImage()
+    {
+        $this->deleteOldHeroBannerImage();
+        
+        $setting = Setting::where('key', 'hero_banner_image')->first();
+        if ($setting) {
+            $setting->delete();
+        }
+
+        return back()->with('success', 'Banner image deleted successfully.');
+    }
+
+    /**
+     * Delete old hero banner image file
+     */
+    private function deleteOldHeroBannerImage(): void
+    {
+        $oldValue = Setting::get('hero_banner_image');
+        
+        if ($oldValue && str_starts_with($oldValue, '/storage/')) {
+            $oldPath = str_replace('/storage/', '', $oldValue);
+            
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->delete($oldPath);
+            }
+        }
+    }
 }

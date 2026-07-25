@@ -1,13 +1,26 @@
 import { Head } from '@inertiajs/react';
-import Navbar from '../components/Navbar/navbar';
-import Footer from '../components/Footer/footer';
 import HeroSection from '../components/Hero/herosection';
 
-export default function Home() {
+interface SliderImage {
+    id?: number;
+    image: string;
+}
+
+interface HeroSettings {
+    slider_images?: SliderImage[];
+    slider_enabled?: string;
+    auto_slide_interval?: number;
+}
+
+interface Props {
+    heroSettings?: HeroSettings;
+}
+
+export default function Home({ heroSettings }: Props) {
     return (
         <>
             <Head title="Home" />
-            <HeroSection />
+            <HeroSection settings={heroSettings} />
         </>
     );
 }

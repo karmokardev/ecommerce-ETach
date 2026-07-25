@@ -588,6 +588,265 @@ updateFooterForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'
 
 updateFooter.form = updateFooterForm
 
-const SiteSettingsController = { index, store, update, destroy, typography, updateTypography, footer, updateFooter }
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+export const hero = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: hero.url(options),
+    method: 'get',
+})
+
+hero.definition = {
+    methods: ["get","head"],
+    url: '/admin/settings/hero',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+hero.url = (options?: RouteQueryOptions) => {
+    return hero.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+hero.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: hero.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+hero.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: hero.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+const heroForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hero.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+heroForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hero.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::hero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:299
+* @route '/admin/settings/hero'
+*/
+heroForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: hero.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+hero.form = heroForm
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateHero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:318
+* @route '/admin/settings/hero'
+*/
+export const updateHero = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: updateHero.url(options),
+    method: 'post',
+})
+
+updateHero.definition = {
+    methods: ["post"],
+    url: '/admin/settings/hero',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateHero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:318
+* @route '/admin/settings/hero'
+*/
+updateHero.url = (options?: RouteQueryOptions) => {
+    return updateHero.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateHero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:318
+* @route '/admin/settings/hero'
+*/
+updateHero.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: updateHero.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateHero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:318
+* @route '/admin/settings/hero'
+*/
+const updateHeroForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: updateHero.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateHero
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:318
+* @route '/admin/settings/hero'
+*/
+updateHeroForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: updateHero.url(options),
+    method: 'post',
+})
+
+updateHero.form = updateHeroForm
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::uploadHeroImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:354
+* @route '/admin/settings/hero/upload-image'
+*/
+export const uploadHeroImage = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadHeroImage.url(options),
+    method: 'post',
+})
+
+uploadHeroImage.definition = {
+    methods: ["post"],
+    url: '/admin/settings/hero/upload-image',
+} satisfies RouteDefinition<["post"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::uploadHeroImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:354
+* @route '/admin/settings/hero/upload-image'
+*/
+uploadHeroImage.url = (options?: RouteQueryOptions) => {
+    return uploadHeroImage.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::uploadHeroImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:354
+* @route '/admin/settings/hero/upload-image'
+*/
+uploadHeroImage.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: uploadHeroImage.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::uploadHeroImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:354
+* @route '/admin/settings/hero/upload-image'
+*/
+const uploadHeroImageForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: uploadHeroImage.url(options),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::uploadHeroImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:354
+* @route '/admin/settings/hero/upload-image'
+*/
+uploadHeroImageForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: uploadHeroImage.url(options),
+    method: 'post',
+})
+
+uploadHeroImage.form = uploadHeroImageForm
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::deleteHeroBannerImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:371
+* @route '/admin/settings/hero/banner-image'
+*/
+export const deleteHeroBannerImage = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: deleteHeroBannerImage.url(options),
+    method: 'delete',
+})
+
+deleteHeroBannerImage.definition = {
+    methods: ["delete"],
+    url: '/admin/settings/hero/banner-image',
+} satisfies RouteDefinition<["delete"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::deleteHeroBannerImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:371
+* @route '/admin/settings/hero/banner-image'
+*/
+deleteHeroBannerImage.url = (options?: RouteQueryOptions) => {
+    return deleteHeroBannerImage.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::deleteHeroBannerImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:371
+* @route '/admin/settings/hero/banner-image'
+*/
+deleteHeroBannerImage.delete = (options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
+    url: deleteHeroBannerImage.url(options),
+    method: 'delete',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::deleteHeroBannerImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:371
+* @route '/admin/settings/hero/banner-image'
+*/
+const deleteHeroBannerImageForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: deleteHeroBannerImage.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::deleteHeroBannerImage
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:371
+* @route '/admin/settings/hero/banner-image'
+*/
+deleteHeroBannerImageForm.delete = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: deleteHeroBannerImage.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'DELETE',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+deleteHeroBannerImage.form = deleteHeroBannerImageForm
+
+const SiteSettingsController = { index, store, update, destroy, typography, updateTypography, footer, updateFooter, hero, updateHero, uploadHeroImage, deleteHeroBannerImage }
 
 export default SiteSettingsController
