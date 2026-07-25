@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { router } from '@inertiajs/react';
-import { Heart, HeartCrack } from 'lucide-react';
+import { Heart } from 'lucide-react';
 
 interface WishlistButtonProps {
     productId: number;
@@ -94,7 +94,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
             onClick={toggleWishlist}
             disabled={isLoading}
             className={`
-                flex items-center gap-2 rounded-lg transition-all duration-200
+                flex items-center justify-center rounded-lg transition-all duration-200
                 ${isInWishlist
                     ? 'text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
                     : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
@@ -104,11 +104,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
             `}
             title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-            {isInWishlist ? (
-                <Heart size={iconSizes[size]} fill="currentColor" />
-            ) : (
-                <HeartCrack size={iconSizes[size]} />
-            )}
+            <Heart size={iconSizes[size]} fill={isInWishlist ? 'currentColor' : 'none'} />
             {showLabel && (
                 <span className="text-sm font-medium">
                     {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}

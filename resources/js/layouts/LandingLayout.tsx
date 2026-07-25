@@ -7,7 +7,7 @@ interface LandingLayoutProps {
 
 export default function LandingLayout({ children }: LandingLayoutProps) {
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gray-50">
             <Navbar/>
             <div className="">
                 {children}

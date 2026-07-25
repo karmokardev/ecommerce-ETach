@@ -14,18 +14,7 @@ createInertiaApp({
     layout: (name) => {
         switch (true) {
             case name === 'home':
-            case name === 'member/register':
-            case name === 'posts/public-index':
-            case name === 'posts/public-show':
-            case name === 'history/index':
-            case name === 'swot/index':
-            case name === 'about/index':
-            case name === 'committee/index':
-            case name === 'membership/register':
-            case name === 'contact/index':
-            case name === 'legal/index':
-            case name === 'privacy/index':
-            case name === 'terms/index':
+            case name === 'Frontend/FeaturedProducts/Index':
                 return LandingLayout;
             case name === 'dashboard':
                 return AdminLayout;

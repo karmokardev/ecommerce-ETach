@@ -28,7 +28,7 @@ const HeroSection: React.FC<Props> = ({ settings }) => {
 
   return (
     <section className="relative w-full">
-      <div className="relative w-full h-[200px] sm:h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px]">
+      <div className="relative w-full h-[200px] sm:h-full md:h-full lg:h-full xl:h-full">
         <Carousel
           autoPlay
           infiniteLoop
@@ -67,7 +67,7 @@ const HeroSection: React.FC<Props> = ({ settings }) => {
           )}
         >
           {sliderImages.map((slide, index) => (
-            <div key={index} className="relative w-full h-[220px] sm:h-[300px] md:h-[400px] lg:h-[500px] xl:h-[600px]">
+            <div key={index} className="relative w-full h-[200px] sm:h-full md:h-full lg:h-full xl:h-full">
               <img
                 src={slide.image}
                 alt={`Slide ${index + 1}`}

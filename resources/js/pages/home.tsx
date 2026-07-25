@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import HeroSection from '../components/Hero/herosection';
+import FeaturedProduct from './Frontend/FeaturedProducts/featuredProduct';
 
 interface SliderImage {
     id?: number;
@@ -21,6 +22,7 @@ export default function Home({ heroSettings }: Props) {
         <>
             <Head title="Home" />
             <HeroSection settings={heroSettings} />
+            <FeaturedProduct />
         </>
     );
 }
