@@ -68,6 +68,7 @@ class ProductSeeder extends Seeder
                 'description' => $description . ' This product features advanced technology, premium materials, and exceptional build quality. Perfect for both personal and professional use.',
                 'status' => 'active',
                 'is_featured' => rand(0, 1) ? true : false,
+                'free_delivery' => rand(0, 1) ? true : false,
             ]);
 
             // Add random attribute values (2-4 per product) if attribute values exist

@@ -18,6 +18,7 @@ interface Product {
     thumbnail: string | null;
     status: string;
     is_featured: boolean;
+    free_delivery: boolean;
     created_at: string;
     updated_at: string;
     category?: {
@@ -267,6 +268,7 @@ export default function Products({ products, categories, brands, filters }: Prod
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Brand</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Featured</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Free Delivery</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
@@ -328,6 +330,11 @@ export default function Products({ products, categories, brands, filters }: Prod
                                                 >
                                                     <FaStar />
                                                 </button>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`text-sm ${product.free_delivery ? 'text-green-600 dark:text-green-400 font-medium' : 'text-gray-400 dark:text-gray-600'}`}>
+                                                    {product.free_delivery ? 'Yes' : 'No'}
+                                                </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                                 <button

@@ -39,6 +39,7 @@ export default function CreateProduct({ categories, brands, attributes }: Create
         thumbnail: null as File | null,
         status: 'active',
         is_featured: false,
+        free_delivery: false,
         attribute_values: [] as number[],
         images: [] as File[],
     });
@@ -145,6 +146,7 @@ export default function CreateProduct({ categories, brands, attributes }: Create
         formData.append('description', data.description);
         formData.append('status', data.status);
         formData.append('is_featured', data.is_featured ? '1' : '0');
+        formData.append('free_delivery', data.free_delivery ? '1' : '0');
 
         if (data.thumbnail) {
             formData.append('thumbnail', data.thumbnail);
@@ -477,6 +479,20 @@ export default function CreateProduct({ categories, brands, attributes }: Create
                                     />
                                     <label htmlFor="is_featured" className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Featured Product
+                                    </label>
+                                </div>
+
+                                {/* Free Delivery */}
+                                <div className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        id="free_delivery"
+                                        checked={data.free_delivery}
+                                        onChange={(e) => setData('free_delivery', e.target.checked)}
+                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                    />
+                                    <label htmlFor="free_delivery" className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Free Delivery
                                     </label>
                                 </div>
 

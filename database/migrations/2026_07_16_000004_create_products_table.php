@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('thumbnail')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->boolean('is_featured')->default(false);
+            $table->boolean('free_delivery')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });

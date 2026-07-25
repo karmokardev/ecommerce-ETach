@@ -22,6 +22,7 @@ use Illuminate\Support\Str;
  * @property string|null $thumbnail
  * @property string $status
  * @property bool $is_featured
+ * @property bool $free_delivery
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
@@ -41,6 +42,7 @@ use Illuminate\Support\Str;
     'thumbnail',
     'status',
     'is_featured',
+    'free_delivery',
 ])]
 class Product extends Model
 {
@@ -50,6 +52,7 @@ class Product extends Model
     {
         return [
             'is_featured' => 'boolean',
+            'free_delivery' => 'boolean',
         ];
     }
 
