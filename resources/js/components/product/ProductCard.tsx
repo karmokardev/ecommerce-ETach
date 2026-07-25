@@ -19,9 +19,8 @@ export default function ProductCard({ id, name, image, price, originalPrice, pro
     : null;
 
   return (
-      <div className="relative w-[260px] h-[260px] overflow-hidden ">
-        
-        {/* Discount badge */}
+<div className="relative w-full aspect-square overflow-hidden"> 
+       {/* Discount badge */}
         {discountPercent ? (
           <span className="absolute left-2 top-2 z-10 rounded-md bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
             -{discountPercent}%
@@ -45,12 +44,12 @@ export default function ProductCard({ id, name, image, price, originalPrice, pro
         </div>
 
         {/* bottom bar */}
-        <div className="absolute bottom-[-10px] left-10 right-10 bg-white/70 rounded-lg p-2 flex items-center justify-center gap-2">          
-            <p className="text-lg font-extrabold text-neutral-900 leading-none">
+        <div className="absolute bottom-0 left-2 right-2 sm:left-6 sm:right-6 bg-white rounded-t-lg px-2 py-1 flex items-center justify-center gap-1 overflow-hidden">          
+            <p className="text-xs sm:text-sm font-extrabold text-neutral-900 leading-none whitespace-nowrap truncate">
               ৳{price.toFixed(2)}
             </p>
             {originalPrice && (
-              <p className="text-sm text-neutral-400 line-through leading-none">
+              <p className="text-[10px] sm:text-xs text-neutral-400 line-through leading-none whitespace-nowrap truncate">
                 ৳{originalPrice.toFixed(2)}
               </p>
             )}

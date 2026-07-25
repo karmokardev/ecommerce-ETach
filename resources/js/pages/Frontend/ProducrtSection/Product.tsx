@@ -44,15 +44,17 @@ export default function ProductSection({ products: initialProducts = [] }: Props
     return (
         <section className="max-w-[var(--breakpoint-2xl)] mx-auto">
             <div className=" px-4 sm:px-6 lg:px-8 py-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-8">Latest Products</h2>
+                <h2 className="w-full py-4 bg-primary text-white text-3xl font-bold text-center mb-4">
+                    New Arrival
+                </h2>
                 
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                        {products.map((product) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                        {products.map((product, index) => (
                             <ProductCard
                                 key={product.id}
                                 id={product.id}

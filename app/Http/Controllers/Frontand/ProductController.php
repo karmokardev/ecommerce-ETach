@@ -42,15 +42,16 @@ class ProductController extends Controller
         $products = $query->get();
 
         $formattedProducts = $products->map(function ($product) {
-            $primaryImage = $product->images->first()?->image_path ?? '/uploads/products/placeholder.svg';
+            $primaryImage = $product->images->first()?->image ?? '/uploads/products/placeholder.svg';
+            $firstVariant = $product->variants->first();
             
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'image' => $primaryImage,
-                'price' => (float) $product->price,
-                'original_price' => $product->compare_at_price ? (float) $product->compare_at_price : null,
-                'product_variant_id' => $product->variants->first()?->id ?? null,
+                'price' => $firstVariant ? (float) $firstVariant->price : 0,
+                'original_price' => $firstVariant && $firstVariant->compare_price ? (float) $firstVariant->compare_price : null,
+                'product_variant_id' => $firstVariant?->id ?? null,
             ];
         });
 
@@ -69,15 +70,16 @@ class ProductController extends Controller
             ->get();
 
         $formattedProducts = $products->map(function ($product) {
-            $primaryImage = $product->images->first()?->image_path ?? '/uploads/products/placeholder.svg';
+            $primaryImage = $product->images->first()?->image ?? '/uploads/products/placeholder.svg';
+            $firstVariant = $product->variants->first();
             
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'image' => $primaryImage,
-                'price' => (float) $product->price,
-                'original_price' => $product->compare_at_price ? (float) $product->compare_at_price : null,
-                'product_variant_id' => $product->variants->first()?->id ?? null,
+                'price' => $firstVariant ? (float) $firstVariant->price : 0,
+                'original_price' => $firstVariant && $firstVariant->compare_price ? (float) $firstVariant->compare_price : null,
+                'product_variant_id' => $firstVariant?->id ?? null,
             ];
         });
 
@@ -93,23 +95,24 @@ class ProductController extends Controller
             ->where('status', 'active')
             ->findOrFail($id);
 
-        $primaryImage = $product->images->first()?->image_path ?? '/uploads/products/placeholder.svg';
+        $primaryImage = $product->images->first()?->image ?? '/uploads/products/placeholder.svg';
+        $firstVariant = $product->variants->first();
 
         $formattedProduct = [
             'id' => $product->id,
             'name' => $product->name,
             'description' => $product->description,
             'image' => $primaryImage,
-            'images' => $product->images->map(fn($img) => $img->image_path),
-            'price' => (float) $product->price,
-            'original_price' => $product->compare_at_price ? (float) $product->compare_at_price : null,
+            'images' => $product->images->map(fn($img) => $img->image),
+            'price' => $firstVariant ? (float) $firstVariant->price : 0,
+            'original_price' => $firstVariant && $firstVariant->compare_price ? (float) $firstVariant->compare_price : null,
             'category' => $product->category?->name,
             'brand' => $product->brand?->name,
             'variants' => $product->variants->map(function ($variant) {
                 return [
                     'id' => $variant->id,
                     'price' => (float) $variant->price,
-                    'stock' => $variant->stock,
+                    'stock' => $variant->current_stock,
                     'attributes' => $variant->attributeValues->map(fn($av) => [
                         'attribute' => $av->attribute->name,
                         'value' => $av->value,
