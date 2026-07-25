@@ -118,7 +118,7 @@ const WishlistPage: React.FC<WishlistPageProps> = ({ wishlists }) => {
             <>
                 <Head title="My Wishlist" />
                 <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="  px-4 sm:px-6 lg:px-8">
                         <div className="text-center">
                             <div className="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-gray-100 dark:bg-gray-800 mb-6">
                                 <Heart size={48} className="text-gray-400" />
@@ -146,7 +146,7 @@ const WishlistPage: React.FC<WishlistPageProps> = ({ wishlists }) => {
         <>
             <Head title="My Wishlist" />
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="  px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-8">
                         <div>

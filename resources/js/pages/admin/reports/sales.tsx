@@ -92,7 +92,7 @@ export default function SalesReports({ period, startDate, endDate, statistics, c
         <>
             <Head title="Sales Reports" />
             <div className="p-6">
-                <div className="max-w-7xl mx-auto">
+                <div className=" ">
                     {/* Header */}
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold dark:text-white">Sales Reports</h1>

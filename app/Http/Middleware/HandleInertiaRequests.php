@@ -53,6 +53,21 @@ class HandleInertiaRequests extends Middleware
                 'favicon' => \App\Models\Setting::get('favicon', '/favicon.ico'),
                 'favicon_svg' => \App\Models\Setting::get('favicon_svg', '/favicon.svg'),
                 'apple_touch_icon' => \App\Models\Setting::get('apple_touch_icon', '/apple-touch-icon.png'),
+                'footer' => [
+                    'company_name' => \App\Models\Setting::get('footer_company_name', 'HRidoy'),
+                    'company_tagline' => \App\Models\Setting::get('footer_company_tagline'),
+                    'company_description' => \App\Models\Setting::get('footer_company_description', 'Nexuas Driving Instructor Foundation is dedicated to promoting safe driving skills and responsible road behavior. Learn safe, drive safe, save lives—empowering individuals for a safer and smarter driving future.'),
+                    'email' => \App\Models\Setting::get('footer_email', 'presidenthridoy@gmail.com'),
+                    'phone' => \App\Models\Setting::get('footer_phone', '+880 1794 587824'),
+                    'address' => \App\Models\Setting::get('footer_address', 'Flat 5-A, house 763B Monipur, Borobag, Mirpur-2, Dhaka-1216.'),
+                    'social_links' => json_decode(\App\Models\Setting::get('footer_social_links', '[]'), true) ?: [],
+                    'sections' => json_decode(\App\Models\Setting::get('footer_sections', '[]'), true) ?: [],
+                    'copyright' => [
+                        'developer_name' => \App\Models\Setting::get('footer_developer_name', 'Ongsho'),
+                        'developer_link' => \App\Models\Setting::get('footer_developer_link', 'https://ongsho.com/'),
+                    ],
+                    'logo' => \App\Models\Setting::get('footer_logo', '/logo.png'),
+                ],
             ],
         ];
     }

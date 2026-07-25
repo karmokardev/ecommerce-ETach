@@ -1,14 +1,13 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
+import Navbar from '../components/Navbar/navbar';
+import Footer from '../components/Footer/footer';
+import HeroSection from '../components/Hero/herosection';
 
 export default function Home() {
-    const page = usePage();
-
     return (
         <>
             <Head title="Home" />
-            <div className="">
-               <h1>Home</h1>
-            </div>
+            <HeroSection />
         </>
     );
 }

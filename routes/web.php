@@ -100,6 +100,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/settings/typography', [SiteSettingsController::class, 'typography'])->name('admin.settings.typography');
         Route::post('/admin/settings/typography', [SiteSettingsController::class, 'updateTypography'])->name('admin.settings.typography.update');
 
+        Route::get('/admin/settings/footer', [SiteSettingsController::class, 'footer'])->name('admin.settings.footer');
+        Route::put('/admin/settings/footer', [SiteSettingsController::class, 'updateFooter'])->name('admin.settings.footer.update');
+
         // categories - admin only
         Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
         Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');

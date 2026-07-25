@@ -2,6 +2,7 @@ import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFo
 import general5d934c from './general'
 import logoFavicon8e0c49 from './logo-favicon'
 import typographyB4beaf from './typography'
+import footer42f611 from './footer'
 /**
 * @see \App\Http\Controllers\Admin\SiteSettingsController::general
 * @see app/Http/Controllers/Admin/SiteSettingsController.php:15
@@ -245,10 +246,92 @@ typographyForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> 
 
 typography.form = typographyForm
 
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+export const footer = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: footer.url(options),
+    method: 'get',
+})
+
+footer.definition = {
+    methods: ["get","head"],
+    url: '/admin/settings/footer',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footer.url = (options?: RouteQueryOptions) => {
+    return footer.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footer.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: footer.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footer.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: footer.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+const footerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: footer.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: footer.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: footer.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+footer.form = footerForm
+
 const settings = {
     general: Object.assign(general, general5d934c),
     logoFavicon: Object.assign(logoFavicon, logoFavicon8e0c49),
     typography: Object.assign(typography, typographyB4beaf),
+    footer: Object.assign(footer, footer42f611),
 }
 
 export default settings

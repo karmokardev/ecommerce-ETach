@@ -441,6 +441,153 @@ updateTypographyForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'
 
 updateTypography.form = updateTypographyForm
 
-const SiteSettingsController = { index, store, update, destroy, typography, updateTypography }
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+export const footer = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: footer.url(options),
+    method: 'get',
+})
+
+footer.definition = {
+    methods: ["get","head"],
+    url: '/admin/settings/footer',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footer.url = (options?: RouteQueryOptions) => {
+    return footer.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footer.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: footer.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footer.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: footer.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+const footerForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: footer.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footerForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: footer.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::footer
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:185
+* @route '/admin/settings/footer'
+*/
+footerForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: footer.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+footer.form = footerForm
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateFooter
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:212
+* @route '/admin/settings/footer'
+*/
+export const updateFooter = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: updateFooter.url(options),
+    method: 'put',
+})
+
+updateFooter.definition = {
+    methods: ["put"],
+    url: '/admin/settings/footer',
+} satisfies RouteDefinition<["put"]>
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateFooter
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:212
+* @route '/admin/settings/footer'
+*/
+updateFooter.url = (options?: RouteQueryOptions) => {
+    return updateFooter.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateFooter
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:212
+* @route '/admin/settings/footer'
+*/
+updateFooter.put = (options?: RouteQueryOptions): RouteDefinition<'put'> => ({
+    url: updateFooter.url(options),
+    method: 'put',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateFooter
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:212
+* @route '/admin/settings/footer'
+*/
+const updateFooterForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: updateFooter.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+/**
+* @see \App\Http\Controllers\Admin\SiteSettingsController::updateFooter
+* @see app/Http/Controllers/Admin/SiteSettingsController.php:212
+* @route '/admin/settings/footer'
+*/
+updateFooterForm.put = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+    action: updateFooter.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'PUT',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'post',
+})
+
+updateFooter.form = updateFooterForm
+
+const SiteSettingsController = { index, store, update, destroy, typography, updateTypography, footer, updateFooter }
 
 export default SiteSettingsController

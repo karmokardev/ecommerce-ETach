@@ -81,7 +81,7 @@ export default function ColorIndex({ colors, presetColors }: ColorProps) {
         <>
             <Head title="Color Management" />
             <div className="p-6">
-                <div className="max-w-7xl mx-auto">
+                <div className="">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-2xl font-bold dark:text-white">Color Management</h1>
                     </div>

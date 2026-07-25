@@ -36,7 +36,7 @@ const CustomerAccountEdit: React.FC<Props> = ({ account }) => {
             <Head title={`Edit Account - ${account.user.name}`} />
 
             <div className="py-6">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="  px-4 sm:px-6 lg:px-8">
                     <div className="mb-6">
                         <Link
                             href={`/customer-accounts/${account.id}`}

@@ -110,6 +110,7 @@ const navItemsByRole: Record<string, NavItem[]> = {
                 { title: 'General Settings', href: '/admin/settings/general', icon: LayoutGrid },
                 { title: 'Logo & Favicon', href: '/admin/settings/logo-favicon', icon: Palette },
                 { title: 'Typography', href: '/admin/settings/typography', icon: Type },
+                { title: 'Footer Settings', href: '/admin/settings/footer', icon: LayoutGrid },
             ]
         },
     ],

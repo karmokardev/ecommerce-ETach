@@ -32,7 +32,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute bottom-1/3 left-1/3 w-2 h-2 bg-white/25 rounded-full animate-[float_6s_ease-in-out_infinite_2s]" />
       <div className="absolute top-1/2 right-1/3 w-4 h-4 bg-white/15 rounded-full animate-[float_7s_ease-in-out_infinite_0.5s]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-5xl mx-auto">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 mb-8 animate-[fadeInDown_0.8s_ease-out]">
