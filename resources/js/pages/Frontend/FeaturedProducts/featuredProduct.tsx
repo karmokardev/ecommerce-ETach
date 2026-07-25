@@ -37,7 +37,7 @@ export default function FeaturedProduct() {
     };
 
     return (
-        <section className="mx-auto w-full lg:max-w-[var(--breakpoint-3xl)] bg-gray-50">
+        <section className="mx-auto w-full lg:max-w-[var(--breakpoint-2xl)] bg-gray-50">
             <div className="px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-6 sm:mb-8 flex items-center justify-between">
                     <div>

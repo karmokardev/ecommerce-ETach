@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Frontand;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\Product;
+use App\Models\ProductImage;
 
 class HomeController extends Controller
 {

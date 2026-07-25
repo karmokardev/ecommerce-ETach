@@ -1,6 +1,6 @@
 import { Star } from 'lucide-react';
-import WishlistButton from '../WishlistButton';
-import AddToCartButton from '../AddToCartButton';
+import CartButton from '../CartButton';
+import WishlistIconButton from '../WishlistIconButton';
 
 interface ProductCardProps {
     id: number;
@@ -83,10 +83,10 @@ export default function FeaturedCard({
             {/* Action buttons */}
             <div className="flex flex-col justify-between items-center p-3">
                 {/* Wishlist button */}
-                <WishlistButton productId={id} size="md" />
+                <WishlistIconButton productId={id} size="lg" />
 
                 {/* Add to cart button */}
-                <AddToCartButton productId={id} size="md" />
+                <CartButton productId={id} size="lg" />
             </div>
         </div>
     );

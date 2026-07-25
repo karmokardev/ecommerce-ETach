@@ -81,7 +81,7 @@ loginForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 login.form = loginForm
 
 /**
-* @see routes/web.php:491
+* @see routes/web.php:523
 * @route '/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -95,7 +95,7 @@ logout.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see routes/web.php:491
+* @see routes/web.php:523
 * @route '/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ logout.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:491
+* @see routes/web.php:523
 * @route '/logout'
 */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -112,7 +112,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
-* @see routes/web.php:491
+* @see routes/web.php:523
 * @route '/logout'
 */
 const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -121,7 +121,7 @@ const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 })
 
 /**
-* @see routes/web.php:491
+* @see routes/web.php:523
 * @route '/logout'
 */
 logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -214,7 +214,7 @@ register.form = registerForm
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -229,7 +229,7 @@ home.definition = {
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 home.url = (options?: RouteQueryOptions) => {
@@ -238,7 +238,7 @@ home.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -248,7 +248,7 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -258,7 +258,7 @@ home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -268,7 +268,7 @@ const homeForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -278,7 +278,7 @@ homeForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 
 /**
 * @see \App\Http\Controllers\Frontand\HomeController::home
-* @see app/Http/Controllers/Frontand/HomeController.php:10
+* @see app/Http/Controllers/Frontand/HomeController.php:12
 * @route '/'
 */
 homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

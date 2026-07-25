@@ -40,6 +40,7 @@ use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\Frontand\WishlistController as FrontendWishlistController;
 use App\Http\Controllers\Frontand\CartController;
 use App\Http\Controllers\Frontand\FeaturedController;
+use App\Http\Controllers\Frontand\ProductController as FrontendProductController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\Admin\MembershipApprovalController;
@@ -48,6 +49,37 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+// Frontend Wishlist Routes (authenticated users only)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wishlist', [FrontendWishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist', [FrontendWishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{id}', [FrontendWishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::post('/wishlist/check', [FrontendWishlistController::class, 'check'])->name('wishlist.check');
+    Route::get('/wishlist/count', [FrontendWishlistController::class, 'count'])->name('wishlist.count');
+    Route::post('/wishlist/{id}/move-to-cart', [FrontendWishlistController::class, 'moveToCart'])->name('wishlist.move-to-cart');
+    Route::post('/wishlist/clear', [FrontendWishlistController::class, 'clear'])->name('wishlist.clear');
+});
+
+// Frontend Cart Routes (both authenticated and guest users)
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+Route::get('/cart/show', [CartController::class, 'show'])->name('cart.show');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/cart/merge', [CartController::class, 'merge'])->name('cart.merge')->middleware('auth');
+
+// Frontend Featured Products Routes
+Route::get('/api/featured-products', [FeaturedController::class, 'index'])->name('api.featured-products.index');
+Route::get('/api/featured-products/all', [FeaturedController::class, 'all'])->name('api.featured-products.all');
+
+
+// Frontend Product API routes
+Route::get('/api/products', [FrontendProductController::class, 'index']);
+Route::get('/api/products/latest', [FrontendProductController::class, 'latest']);
+Route::get('/api/products/{id}', [FrontendProductController::class, 'show']);
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/featured-products', [FeaturedController::class, 'showPage'])->name('featured-products.index');
 });
@@ -495,29 +527,5 @@ Route::post('/logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
-// Frontend Wishlist Routes (authenticated users only)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/wishlist', [FrontendWishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/wishlist', [FrontendWishlistController::class, 'store'])->name('wishlist.store');
-    Route::delete('/wishlist/{id}', [FrontendWishlistController::class, 'destroy'])->name('wishlist.destroy');
-    Route::post('/wishlist/check', [FrontendWishlistController::class, 'check'])->name('wishlist.check');
-    Route::get('/wishlist/count', [FrontendWishlistController::class, 'count'])->name('wishlist.count');
-    Route::post('/wishlist/{id}/move-to-cart', [FrontendWishlistController::class, 'moveToCart'])->name('wishlist.move-to-cart');
-    Route::post('/wishlist/clear', [FrontendWishlistController::class, 'clear'])->name('wishlist.clear');
-});
-
-// Frontend Cart Routes (both authenticated and guest users)
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
-Route::get('/cart/show', [CartController::class, 'show'])->name('cart.show');
-Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-Route::post('/cart/merge', [CartController::class, 'merge'])->name('cart.merge')->middleware('auth');
-
-// Frontend Featured Products Routes
-Route::get('/api/featured-products', [FeaturedController::class, 'index'])->name('api.featured-products.index');
-Route::get('/api/featured-products/all', [FeaturedController::class, 'all'])->name('api.featured-products.all');
 
 require __DIR__ . '/settings.php';

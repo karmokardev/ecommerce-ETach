@@ -1,25 +1,33 @@
-import { useState, useEffect } from 'react';
-import { router } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
+import { router } from '@inertiajs/react';
 
-interface WishlistButtonProps {
-    productId: number;
+interface WishlistIconButtonProps {
+    productId?: number;
     productVariantId?: number | null;
     size?: 'sm' | 'md' | 'lg';
-    showLabel?: boolean;
+    isWishlisted?: boolean;
+    onToggle?: () => void;
 }
 
-const WishlistButton: React.FC<WishlistButtonProps> = ({
+const WishlistIconButton: React.FC<WishlistIconButtonProps> = ({
     productId,
     productVariantId = null,
     size = 'md',
-    showLabel = false,
+    isWishlisted: propIsWishlisted = false,
+    onToggle,
 }) => {
-    const [isInWishlist, setIsInWishlist] = useState(false);
+    const [isWishlisted, setIsInWishlist] = useState(propIsWishlisted);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        checkWishlistStatus();
+        setIsInWishlist(propIsWishlisted);
+    }, [propIsWishlisted]);
+
+    useEffect(() => {
+        if (productId) {
+            checkWishlistStatus();
+        }
     }, [productId, productVariantId]);
 
     const checkWishlistStatus = async () => {
@@ -42,11 +50,17 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
         }
     };
 
-    const toggleWishlist = async () => {
+    const handleToggle = async () => {
+        if (onToggle) {
+            onToggle();
+            return;
+        }
+
+        if (!productId) return;
+
         setIsLoading(true);
         try {
-            if (isInWishlist) {
-                // Remove from wishlist
+            if (isWishlisted) {
                 await router.delete(`/wishlist/${productId}-${productVariantId || 'null'}`, {
                     onSuccess: () => {
                         setIsInWishlist(false);
@@ -57,7 +71,6 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
                     },
                 });
             } else {
-                // Add to wishlist
                 await router.post('/wishlist', {
                     product_id: productId,
                     product_variant_id: productVariantId,
@@ -78,40 +91,36 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
     };
 
     const sizeClasses = {
-        sm: 'p-1.5',
-        md: 'p-2',
-        lg: 'p-3',
+        sm: 'w-6 h-6',
+        md: 'w-8 h-8',
+        lg: 'w-10 h-10',
     };
 
     const iconSizes = {
-        sm: 16,
-        md: 20,
-        lg: 24,
+        sm: 14,
+        md: 15,
+        lg: 18,
     };
 
     return (
         <button
-            onClick={toggleWishlist}
+            onClick={handleToggle}
             disabled={isLoading}
+            aria-label="Add to wishlist"
             className={`
-                flex items-center justify-center rounded-lg transition-all duration-200
-                ${isInWishlist
-                    ? 'text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20'
-                    : 'text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
-                }
+                rounded-full bg-white flex items-center justify-center 
+                text-neutral-700 hover:text-rose-500 transition-colors
                 ${sizeClasses[size]}
                 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
-            title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
         >
-            <Heart size={iconSizes[size]} fill={isInWishlist ? 'currentColor' : 'none'} />
-            {showLabel && (
-                <span className="text-sm font-medium">
-                    {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
-                </span>
-            )}
+            <Heart 
+                size={iconSizes[size]} 
+                className={isWishlisted ? 'text-rose-500' : ''}
+                fill={isWishlisted ? 'currentColor' : 'none'}
+            />
         </button>
     );
 };
 
-export default WishlistButton;
+export default WishlistIconButton;
