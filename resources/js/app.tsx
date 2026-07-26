@@ -17,6 +17,7 @@ createInertiaApp({
             case name === 'Frontend/FeaturedProducts/Index':
             case name === 'Frontend/ProductDetails/Index':
             case name === 'Frontend/Wishlist/Index':
+            case name === 'Frontend/Cart/Index':
                 return LandingLayout;
             case name === 'dashboard':
                 return AdminLayout;

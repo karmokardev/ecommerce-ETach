@@ -32,6 +32,7 @@ class CartController extends Controller
 
         return inertia('Frontend/Cart/Index', [
             'cart' => $cart,
+            'cartCount' => $cart->items->sum('quantity'),
         ]);
     }
 
@@ -57,14 +58,6 @@ class CartController extends Controller
 
         // Check if product exists
         $product = Product::findOrFail($request->product_id);
-
-        // Check if product has variants - if so, require variant selection
-        if ($product->variants()->exists() && !$request->product_variant_id) {
-            return response()->json([
-                'message' => 'This product has variants. Please select a variant.',
-                'requires_variant' => true,
-            ], 400);
-        }
 
         // Get price from variant or product (using variant pricing)
         if ($request->product_variant_id) {
@@ -303,5 +296,83 @@ class CartController extends Controller
             'message' => 'Cart merged successfully',
             'cart' => $userCart->load('items'),
         ]);
+    }
+
+    /**
+     * Check if a product is in the user's cart.
+     */
+    public function check(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'product_variant_id' => 'nullable|exists:product_variants,id',
+        ]);
+
+        $user = Auth::user();
+        
+        if ($user) {
+            $cart = Cart::where('user_id', $user->id)->first();
+        } else {
+            $sessionId = Session::getId();
+            $cart = Cart::where('session_id', $sessionId)->first();
+        }
+
+        $exists = false;
+        if ($cart) {
+            $exists = CartItem::where('cart_id', $cart->id)
+                ->where('product_id', $request->product_id)
+                ->where('product_variant_id', $request->product_variant_id)
+                ->exists();
+        }
+
+        return response()->json([
+            'exists' => $exists,
+        ]);
+    }
+
+    /**
+     * Remove a product from cart by product_id and variant_id (for API calls).
+     */
+    public function remove(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'product_variant_id' => 'nullable|exists:product_variants,id',
+        ]);
+
+        $user = Auth::user();
+        
+        if ($user) {
+            $cart = Cart::where('user_id', $user->id)->first();
+        } else {
+            $sessionId = Session::getId();
+            $cart = Cart::where('session_id', $sessionId)->first();
+        }
+
+        if (!$cart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart not found',
+            ], 404);
+        }
+
+        $cartItem = CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $request->product_id)
+            ->where('product_variant_id', $request->product_variant_id)
+            ->first();
+
+        if ($cartItem) {
+            $cartItem->delete();
+            $cart->updateTotals();
+            return response()->json([
+                'success' => true,
+                'message' => 'Product removed from cart',
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Product not found in cart',
+        ], 404);
     }
 }

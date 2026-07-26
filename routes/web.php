@@ -70,6 +70,8 @@ Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
 Route::get('/cart/show', [CartController::class, 'show'])->name('cart.show');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::post('/cart/merge', [CartController::class, 'merge'])->name('cart.merge')->middleware('auth');
+Route::post('/cart/check', [CartController::class, 'check'])->name('cart.check');
+Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 
 // Frontend Featured Products Routes
 Route::get('/api/featured-products', [FeaturedController::class, 'index'])->name('api.featured-products.index');

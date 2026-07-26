@@ -333,18 +333,30 @@ export default function ProductDetails({ product: initialProduct }: Props) {
                             {/* Action Buttons */}
                             <div className="flex items-center gap-4 pt-4">
                                 <button
-                                    onClick={() => {
-                                        if (selectedVariant) {
-                                            router.post('/cart', {
-                                                product_id: product.id,
-                                                product_variant_id: selectedVariant.id,
-                                                quantity: 1,
+                                    onClick={async () => {
+                                        const payload = selectedVariant ? {
+                                            product_id: product.id,
+                                            product_variant_id: selectedVariant.id,
+                                            quantity: 1,
+                                        } : {
+                                            product_id: product.id,
+                                            quantity: 1,
+                                        };
+                                        
+                                        try {
+                                            const response = await fetch('/cart', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                                                },
+                                                body: JSON.stringify(payload),
                                             });
-                                        } else {
-                                            router.post('/cart', {
-                                                product_id: product.id,
-                                                quantity: 1,
-                                            });
+                                            if (response.ok) {
+                                                router.reload();
+                                            }
+                                        } catch (error) {
+                                            console.error('Error adding to cart:', error);
                                         }
                                     }}
                                     className="flex-1 bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
@@ -352,26 +364,30 @@ export default function ProductDetails({ product: initialProduct }: Props) {
                                     Add to Cart
                                 </button>
                                 <button
-                                    onClick={() => {
-                                        if (selectedVariant) {
-                                            router.post('/cart', {
-                                                product_id: product.id,
-                                                product_variant_id: selectedVariant.id,
-                                                quantity: 1,
-                                            }, {
-                                                onSuccess: () => {
-                                                    router.visit('/cart');
-                                                }
+                                    onClick={async () => {
+                                        const payload = selectedVariant ? {
+                                            product_id: product.id,
+                                            product_variant_id: selectedVariant.id,
+                                            quantity: 1,
+                                        } : {
+                                            product_id: product.id,
+                                            quantity: 1,
+                                        };
+                                        
+                                        try {
+                                            const response = await fetch('/cart', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                                                },
+                                                body: JSON.stringify(payload),
                                             });
-                                        } else {
-                                            router.post('/cart', {
-                                                product_id: product.id,
-                                                quantity: 1,
-                                            }, {
-                                                onSuccess: () => {
-                                                    router.visit('/cart');
-                                                }
-                                            });
+                                            if (response.ok) {
+                                                router.visit('/cart');
+                                            }
+                                        } catch (error) {
+                                            console.error('Error adding to cart:', error);
                                         }
                                     }}
                                     className="flex-1 bg-gray-900 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors"

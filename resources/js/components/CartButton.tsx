@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { router } from '@inertiajs/react';
 
@@ -6,20 +6,55 @@ interface CartButtonProps {
     productId?: number;
     productVariantId?: number | null;
     size?: 'sm' | 'md' | 'lg';
-    onAddToCart?: () => void;
+    isInCart?: boolean;
+    onToggle?: () => void;
+    onSuccess?: () => void;
 }
 
 const CartButton: React.FC<CartButtonProps> = ({
     productId,
     productVariantId = null,
     size = 'md',
-    onAddToCart,
+    isInCart: propIsInCart = false,
+    onToggle,
+    onSuccess,
 }) => {
+    const [isInCart, setIsInCart] = useState(propIsInCart);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleAddToCart = async () => {
-        if (onAddToCart) {
-            onAddToCart();
+    useEffect(() => {
+        setIsInCart(propIsInCart);
+    }, [propIsInCart]);
+
+    useEffect(() => {
+        if (productId) {
+            checkCartStatus();
+        }
+    }, [productId, productVariantId]);
+
+    const checkCartStatus = async () => {
+        try {
+            const response = await fetch('/cart/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    product_variant_id: productVariantId,
+                }),
+            });
+            const data = await response.json();
+            setIsInCart(data.exists);
+        } catch (error) {
+            console.error('Error checking cart status:', error);
+        }
+    };
+
+    const handleToggle = async () => {
+        if (onToggle) {
+            onToggle();
             return;
         }
 
@@ -27,20 +62,48 @@ const CartButton: React.FC<CartButtonProps> = ({
 
         setIsLoading(true);
         try {
-            await router.post('/cart', {
-                product_id: productId,
-                product_variant_id: productVariantId,
-                quantity: 1,
-            }, {
-                onSuccess: () => {
-                    setIsLoading(false);
-                },
-                onError: () => {
-                    setIsLoading(false);
-                },
-            });
+            if (isInCart) {
+                const response = await fetch('/cart/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        product_variant_id: productVariantId,
+                    }),
+                });
+                if (response.ok) {
+                    setIsInCart(false);
+                    if (onSuccess) onSuccess();
+                    // Reload page props to update cart count in navbar
+                    router.reload();
+                }
+            } else {
+                const response = await fetch('/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        product_variant_id: productVariantId,
+                        quantity: 1,
+                    }),
+                });
+                
+                if (response.ok) {
+                    setIsInCart(true);
+                    if (onSuccess) onSuccess();
+                    // Reload page props to update cart count in navbar
+                    router.reload();
+                }
+            }
         } catch (error) {
-            console.error('Error adding to cart:', error);
+            console.error('Error toggling cart:', error);
+        } finally {
             setIsLoading(false);
         }
     };
@@ -59,17 +122,24 @@ const CartButton: React.FC<CartButtonProps> = ({
 
     return (
         <button
-            onClick={handleAddToCart}
+            onClick={handleToggle}
             disabled={isLoading}
-            aria-label="Add to cart"
+            aria-label={isInCart ? "Remove from cart" : "Add to cart"}
             className={`
-                rounded-full bg-white flex items-center justify-center 
-                text-neutral-700 hover:text-neutral-900 transition-colors
+                rounded-full flex items-center justify-center 
+                ${isInCart ? 'bg-black text-white' : 'bg-white text-neutral-700 hover:text-neutral-900'} transition-colors
                 ${sizeClasses[size]}
                 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
         >
-            <ShoppingBag size={iconSizes[size]} />
+            {isInCart ? (
+                <ShoppingBag size={iconSizes[size]} />
+            ) : (
+                <ShoppingBag 
+                    size={iconSizes[size]} 
+                    fill="none"
+                />
+            )}
         </button>
     );
 };

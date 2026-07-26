@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { Search, User, ShoppingBag, Menu, X, Heart } from 'lucide-react';
 import React, { useState } from 'react';
+import CartDrawer from '../CartDrawer';
 
 export interface NavbarLink {
     label: string;
@@ -39,10 +40,22 @@ const Navbar: React.FC<NavbarProps> = ({
 }) => {
     const { props } = usePage();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+    const [localCartCount, setLocalCartCount] = useState(0);
 
     // Get cart count from props if available
-    const finalCartCount = (props as any)?.cart?.count || cartItemCount;
+    const finalCartCount = localCartCount > 0 ? localCartCount : ((props as any)?.cartCount || (props as any)?.cart?.count || cartItemCount);
     const finalWishlistCount = (props as any)?.wishlist?.count || wishlistItemCount;
+
+    const handleCartChange = async () => {
+        try {
+            const response = await fetch('/cart/count');
+            const data = await response.json();
+            setLocalCartCount(data.count);
+        } catch (error) {
+            console.error('Error fetching cart count:', error);
+        }
+    };
 
     return (
         <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -131,9 +144,9 @@ const Navbar: React.FC<NavbarProps> = ({
                         )}
                         
                         {showCart && (
-                            <Link
-                                href="/cart"
-                                className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all duration-200 relative"
+                            <button
+                                onClick={() => setIsCartDrawerOpen(true)}
+                                className="hidden md:block p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all duration-200 relative"
                                 aria-label="Shopping cart"
                             >
                                 <ShoppingBag className="w-5 h-5" />
@@ -142,7 +155,7 @@ const Navbar: React.FC<NavbarProps> = ({
                                         {finalCartCount}
                                     </span>
                                 )}
-                            </Link>
+                            </button>
                         )}
                     </div>
                 </div>
@@ -243,6 +256,9 @@ const Navbar: React.FC<NavbarProps> = ({
                     </>
                 )}
             </div>
+
+            {/* Cart Drawer */}
+            <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} onCartChange={handleCartChange} />
         </nav>
     );
 };

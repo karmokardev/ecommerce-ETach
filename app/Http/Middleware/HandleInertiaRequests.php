@@ -43,6 +43,21 @@ class HandleInertiaRequests extends Middleware
             $wishlistCount = \App\Models\Wishlist::where('user_id', $request->user()->id)->count();
         }
 
+        // Get cart count for authenticated users and guests
+        $cartCount = 0;
+        if ($request->user()) {
+            $cart = \App\Models\Cart::where('user_id', $request->user()->id)->first();
+            if ($cart) {
+                $cartCount = $cart->items()->sum('quantity');
+            }
+        } else {
+            $sessionId = $request->session()->getId();
+            $cart = \App\Models\Cart::where('session_id', $sessionId)->first();
+            if ($cart) {
+                $cartCount = $cart->items()->sum('quantity');
+            }
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -56,6 +71,9 @@ class HandleInertiaRequests extends Middleware
             ],
             'wishlist' => [
                 'count' => $wishlistCount,
+            ],
+            'cart' => [
+                'count' => $cartCount,
             ],
             'settings' => [
                 'logo' => \App\Models\Setting::get('logo', '/fabicon.png'),
