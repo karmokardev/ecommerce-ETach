@@ -24,8 +24,68 @@ class WishlistController extends Controller
 
         $wishlists = $query->get();
 
+        // Transform the collection to ensure proper JSON serialization
+        $transformedWishlists = $wishlists->map(function ($wishlist) {
+            $product = $wishlist->product;
+            $variant = $wishlist->variant;
+            
+            // Convert images relation to array of image URLs
+            $imagesArray = [];
+            if ($product->images && $product->images->count() > 0) {
+                $imagesArray = $product->images->pluck('image')->toArray();
+            }
+            
+            // If no images, use thumbnail as fallback
+            if (empty($imagesArray) && $product->thumbnail) {
+                $imagesArray = [$product->thumbnail];
+            }
+            
+            // Set default image
+            $defaultImage = !empty($imagesArray) ? $imagesArray[0] : '/uploads/products/placeholder.svg';
+            
+            // Determine price and original price for discount calculation
+            $currentPrice = $variant ? $variant->price : $product->getMinPriceAttribute();
+            $originalPrice = null;
+            
+            if ($variant && $variant->compare_price && $variant->compare_price > $variant->price) {
+                $originalPrice = $variant->compare_price;
+            } elseif ($product->getMaxPriceAttribute() && $product->getMaxPriceAttribute() > $currentPrice) {
+                $originalPrice = $product->getMaxPriceAttribute();
+            }
+            
+            return [
+                'id' => $wishlist->id,
+                'created_at' => $wishlist->created_at,
+                'product' => [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'image' => $defaultImage,
+                    'thumbnail' => $product->thumbnail,
+                    'images' => $imagesArray,
+                    'min_price' => $product->getMinPriceAttribute(),
+                    'max_price' => $product->getMaxPriceAttribute(),
+                    'category' => $product->category ? [
+                        'id' => $product->category->id,
+                        'name' => $product->category->name,
+                    ] : null,
+                    'brand' => $product->brand ? [
+                        'id' => $product->brand->id,
+                        'name' => $product->brand->name,
+                    ] : null,
+                ],
+                'variant' => $variant ? [
+                    'id' => $variant->id,
+                    'price' => $variant->price,
+                    'compare_price' => $variant->compare_price,
+                    'sku' => $variant->sku,
+                ] : null,
+                'display_price' => $currentPrice,
+                'display_original_price' => $originalPrice,
+            ];
+        });
+
         return inertia('Frontend/Wishlist/Index', [
-            'wishlists' => $wishlists,
+            'wishlists' => $transformedWishlists,
         ]);
     }
 
@@ -52,8 +112,8 @@ class WishlistController extends Controller
 
         if ($existing) {
             return response()->json([
+                'success' => false,
                 'message' => 'Product already in wishlist',
-                'wishlist' => $existing,
             ], 409);
         }
 
@@ -64,6 +124,7 @@ class WishlistController extends Controller
         ]);
 
         return response()->json([
+            'success' => true,
             'message' => 'Product added to wishlist',
             'wishlist' => $wishlist->load(['product', 'variant']),
         ], 201);
@@ -72,7 +133,7 @@ class WishlistController extends Controller
     /**
      * Remove a product from the user's wishlist.
      */
-    public function destroy(Request $request, $id): JsonResponse
+    public function destroy(Request $request, $id)
     {
         $user = Auth::user();
 
@@ -82,9 +143,38 @@ class WishlistController extends Controller
 
         $wishlist->delete();
 
-        return response()->json([
-            'message' => 'Product removed from wishlist',
+        return back()->with('success', 'Product removed from wishlist');
+    }
+
+    /**
+     * Remove a product from wishlist by product_id and variant_id (for API calls).
+     */
+    public function remove(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'product_variant_id' => 'nullable|exists:product_variants,id',
         ]);
+
+        $user = Auth::user();
+
+        $wishlist = Wishlist::where('user_id', $user->id)
+            ->where('product_id', $request->product_id)
+            ->where('product_variant_id', $request->product_variant_id)
+            ->first();
+
+        if ($wishlist) {
+            $wishlist->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Product removed from wishlist',
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Product not found in wishlist',
+        ], 404);
     }
 
     /**
@@ -126,7 +216,7 @@ class WishlistController extends Controller
     /**
      * Move product from wishlist to cart (placeholder for cart integration).
      */
-    public function moveToCart(Request $request, $id): JsonResponse
+    public function moveToCart(Request $request, $id)
     {
         $user = Auth::user();
 
@@ -138,23 +228,18 @@ class WishlistController extends Controller
         // TODO: Implement cart integration
         // This would add the product to the cart and remove from wishlist
 
-        return response()->json([
-            'message' => 'Product moved to cart',
-            'wishlist' => $wishlist,
-        ]);
+        return back()->with('success', 'Product moved to cart');
     }
 
     /**
      * Clear all items from the user's wishlist.
      */
-    public function clear(Request $request): JsonResponse
+    public function clear(Request $request)
     {
         $user = Auth::user();
 
         Wishlist::where('user_id', $user->id)->delete();
 
-        return response()->json([
-            'message' => 'Wishlist cleared',
-        ]);
+        return back()->with('success', 'Wishlist cleared');
     }
 }

@@ -37,6 +37,12 @@ class HandleInertiaRequests extends Middleware
     {
         $colors = \App\Models\Color::first();
 
+        // Get wishlist count for authenticated users
+        $wishlistCount = 0;
+        if ($request->user()) {
+            $wishlistCount = \App\Models\Wishlist::where('user_id', $request->user()->id)->count();
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -47,6 +53,9 @@ class HandleInertiaRequests extends Middleware
             'colors' => [
                 'primary' => $colors?->primary_color ?? '#10b981',
                 'secondary' => $colors?->secondary_color ?? '#d946ef',
+            ],
+            'wishlist' => [
+                'count' => $wishlistCount,
             ],
             'settings' => [
                 'logo' => \App\Models\Setting::get('logo', '/fabicon.png'),

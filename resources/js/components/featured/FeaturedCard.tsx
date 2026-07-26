@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react';
+import { router } from '@inertiajs/react';
 import CartButton from '../CartButton';
 import WishlistIconButton from '../WishlistIconButton';
 
@@ -83,7 +84,11 @@ export default function FeaturedCard({
             {/* Action buttons */}
             <div className="flex flex-col justify-between items-center p-3">
                 {/* Wishlist button */}
-                <WishlistIconButton productId={id} size="lg" />
+                <WishlistIconButton 
+                    productId={id} 
+                    size="lg" 
+                    onSuccess={() => router.reload()} 
+                />
 
                 {/* Add to cart button */}
                 <CartButton productId={id} size="lg" />

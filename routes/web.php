@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist', [FrontendWishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist', [FrontendWishlistController::class, 'store'])->name('wishlist.store');
     Route::delete('/wishlist/{id}', [FrontendWishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::post('/wishlist/remove', [FrontendWishlistController::class, 'remove'])->name('wishlist.remove');
     Route::post('/wishlist/check', [FrontendWishlistController::class, 'check'])->name('wishlist.check');
     Route::get('/wishlist/count', [FrontendWishlistController::class, 'count'])->name('wishlist.count');
     Route::post('/wishlist/{id}/move-to-cart', [FrontendWishlistController::class, 'moveToCart'])->name('wishlist.move-to-cart');
@@ -80,7 +81,10 @@ Route::get('/api/products', [FrontendProductController::class, 'index']);
 Route::get('/api/products/latest', [FrontendProductController::class, 'latest']);
 Route::get('/api/products/{id}', [FrontendProductController::class, 'show']);
 
+
 Route::middleware(['auth'])->group(function () {
+    // Frontend Product page routes
+    Route::get('/product/{id}', [FrontendProductController::class, 'showPage'])->name('product.show');
     Route::get('/featured-products', [FeaturedController::class, 'showPage'])->name('featured-products.index');
 });
 

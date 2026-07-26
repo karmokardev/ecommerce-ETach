@@ -8,6 +8,7 @@ interface WishlistIconButtonProps {
     size?: 'sm' | 'md' | 'lg';
     isWishlisted?: boolean;
     onToggle?: () => void;
+    onSuccess?: () => void;
 }
 
 const WishlistIconButton: React.FC<WishlistIconButtonProps> = ({
@@ -16,6 +17,7 @@ const WishlistIconButton: React.FC<WishlistIconButtonProps> = ({
     size = 'md',
     isWishlisted: propIsWishlisted = false,
     onToggle,
+    onSuccess,
 }) => {
     const [isWishlisted, setIsInWishlist] = useState(propIsWishlisted);
     const [isLoading, setIsLoading] = useState(false);
@@ -61,31 +63,59 @@ const WishlistIconButton: React.FC<WishlistIconButtonProps> = ({
         setIsLoading(true);
         try {
             if (isWishlisted) {
-                await router.delete(`/wishlist/${productId}-${productVariantId || 'null'}`, {
-                    onSuccess: () => {
+                // Find the wishlist item ID first
+                const checkResponse = await fetch('/wishlist/check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        product_variant_id: productVariantId,
+                    }),
+                });
+                const checkData = await checkResponse.json();
+
+                if (checkData.exists) {
+                    // Need to get the wishlist ID - we'll need to modify the backend or use a different approach
+                    // For now, let's use a simpler approach - just toggle via API
+                    const response = await fetch(`/wishlist/remove`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                        },
+                        body: JSON.stringify({
+                            product_id: productId,
+                            product_variant_id: productVariantId,
+                        }),
+                    });
+                    if (response.ok) {
                         setIsInWishlist(false);
-                        setIsLoading(false);
-                    },
-                    onError: () => {
-                        setIsLoading(false);
-                    },
-                });
+                        if (onSuccess) onSuccess();
+                    }
+                }
             } else {
-                await router.post('/wishlist', {
-                    product_id: productId,
-                    product_variant_id: productVariantId,
-                }, {
-                    onSuccess: () => {
-                        setIsInWishlist(true);
-                        setIsLoading(false);
+                const response = await fetch('/wishlist', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
                     },
-                    onError: () => {
-                        setIsLoading(false);
-                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        product_variant_id: productVariantId,
+                    }),
                 });
+                if (response.ok) {
+                    setIsInWishlist(true);
+                    if (onSuccess) onSuccess();
+                }
             }
         } catch (error) {
             console.error('Error toggling wishlist:', error);
+        } finally {
             setIsLoading(false);
         }
     };
