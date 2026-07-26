@@ -82,6 +82,7 @@ Route::get('/api/featured-products/all', [FeaturedController::class, 'all'])->na
 Route::get('/api/products', [FrontendProductController::class, 'index']);
 Route::get('/api/products/latest', [FrontendProductController::class, 'latest']);
 Route::get('/api/products/{id}', [FrontendProductController::class, 'show']);
+Route::get('/api/flash-deals', [FrontendProductController::class, 'flashDeals']);
 
 
 Route::middleware(['auth'])->group(function () {

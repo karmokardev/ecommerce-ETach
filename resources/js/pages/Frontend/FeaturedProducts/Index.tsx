@@ -65,8 +65,8 @@ const FeaturedProductsPage = () => {
     return (
         <>
             <Head title="Featured Products" />
-            <div className="min-h-screen py-8">
-                <div className="px-4 sm:px-6 lg:px-8">
+            <div className="py-8">
+                <div className="mx-auto w-full lg:max-w-[var(--breakpoint-2xl)] px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="mb-8">
                         <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">

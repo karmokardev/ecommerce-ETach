@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import HeroSection from '../components/Hero/herosection';
 import FeaturedProduct from './Frontend/FeaturedProducts/featuredProduct';
 import ProductSection from './Frontend/ProducrtSection/Product';
+import FlashDealBanner from '../components/FlashDealBanner';
 
 interface SliderImage {
     id?: number;
@@ -23,8 +24,9 @@ export default function Home({ heroSettings }: Props) {
         <>
             <Head title="Home" />
             <HeroSection settings={heroSettings} />
-            <FeaturedProduct />
+            <FlashDealBanner />
             <ProductSection />
+            <FeaturedProduct />
         </>
     );
 }

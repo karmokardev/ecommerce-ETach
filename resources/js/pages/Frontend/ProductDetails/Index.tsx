@@ -45,6 +45,34 @@ interface Product {
     reviews: Review[];
 }
 
+interface FlashDealProduct {
+    id: number;
+    name: string;
+    image: string;
+    original_price: number;
+    sale_price: number;
+    discount_percentage: number;
+    stock_limit: number | null;
+    sold_count: number;
+    remaining_stock: number;
+    is_available: boolean;
+    product_variant_id: number | null;
+}
+
+interface FlashDealData {
+    flash_sale: {
+        id: number;
+        name: string;
+        description: string | null;
+        discount_type: string;
+        discount_value: number;
+        starts_at: string;
+        ends_at: string;
+        remaining_time: number;
+    } | null;
+    products: FlashDealProduct[];
+}
+
 interface Props {
     product?: Product;
 }
@@ -56,6 +84,9 @@ export default function ProductDetails({ product: initialProduct }: Props) {
     const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
     const [selectedColor, setSelectedColor] = useState<string>('');
     const [selectedSize, setSelectedSize] = useState<string>('');
+    const [flashDealData, setFlashDealData] = useState<FlashDealData | null>(null);
+    const [flashDealProduct, setFlashDealProduct] = useState<FlashDealProduct | null>(null);
+    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
     useEffect(() => {
         if (!initialProduct) {
@@ -66,7 +97,48 @@ export default function ProductDetails({ product: initialProduct }: Props) {
             setSelectedImage(0);
             setSelectedVariant(initialProduct.variants[0] || null);
         }
+
+        // Check for flash deal query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const flashDealId = urlParams.get('flash_deal');
+        if (flashDealId) {
+            fetchFlashDealData(flashDealId);
+        }
     }, [initialProduct]);
+
+    // Update flash deal product when product changes
+    useEffect(() => {
+        if (flashDealData?.products && product) {
+            const dealProduct = flashDealData.products.find((p: FlashDealProduct) => p.id === product.id);
+            if (dealProduct) {
+                setFlashDealProduct(dealProduct);
+            }
+        }
+    }, [product, flashDealData]);
+
+    // Countdown timer for flash deal
+    useEffect(() => {
+        if (flashDealData?.flash_sale) {
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const endTime = new Date(flashDealData.flash_sale!.ends_at).getTime();
+                const distance = endTime - now;
+
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    setTimeLeft({ days, hours, minutes, seconds });
+                } else {
+                    setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [flashDealData]);
 
     const fetchProduct = async (id: string) => {
         try {
@@ -81,6 +153,24 @@ export default function ProductDetails({ product: initialProduct }: Props) {
             console.error('Error fetching product:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchFlashDealData = async (flashDealId: string) => {
+        try {
+            const response = await fetch('/api/flash-deals');
+            const data = await response.json();
+            setFlashDealData(data);
+            
+            // Find the specific product in the flash deal
+            if (data.products && data.products.length > 0 && product) {
+                const dealProduct = data.products.find((p: FlashDealProduct) => p.id === product.id);
+                if (dealProduct) {
+                    setFlashDealProduct(dealProduct);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching flash deal data:', error);
         }
     };
 
@@ -143,13 +233,18 @@ export default function ProductDetails({ product: initialProduct }: Props) {
         ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
         : null;
 
+    // Use flash deal price if available
+    const displayPrice = flashDealProduct ? flashDealProduct.sale_price : (selectedVariant?.price || product.price);
+    const displayOriginalPrice = flashDealProduct ? flashDealProduct.original_price : product.original_price;
+    const displayDiscountPercent = flashDealProduct ? flashDealProduct.discount_percentage : discountPercent;
+
     return (
         <>
             <Head title={product.name} />
             <div className="min-h-screen bg-white">
                 {/* Header */}
                 
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="mx-auto w-full lg:max-w-[var(--breakpoint-2xl)] px-4 sm:px-6 lg:px-8 py-4">
                         <div className="flex items-center justify-between">
                             <button
                                 onClick={handleBack}
@@ -173,7 +268,47 @@ export default function ProductDetails({ product: initialProduct }: Props) {
                     </div>
                 
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="mx-auto w-full lg:max-w-[var(--breakpoint-2xl)] px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Flash Deal Banner */}
+                    {flashDealProduct && flashDealData?.flash_sale && (
+                        <div className="mb-6 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg overflow-hidden">
+                            <div className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div className="text-white">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className="bg-yellow-500 text-blue-900 text-xs font-bold px-2 py-1 rounded">
+                                            FLASH DEAL
+                                        </span>
+                                        <span className="font-bold text-lg">
+                                            {flashDealData.flash_sale.name}
+                                        </span>
+                                    </div>
+                                    <p className="text-blue-200 text-sm">
+                                        {flashDealData.flash_sale.description || 'Limited Time Offer'}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    {[
+                                        { value: timeLeft.days, label: 'DAYS' },
+                                        { value: timeLeft.hours, label: 'HRS' },
+                                        { value: timeLeft.minutes, label: 'MINS' },
+                                        { value: timeLeft.seconds, label: 'SECS' },
+                                    ].map((item) => (
+                                        <div key={item.label} className="text-center">
+                                            <div className="bg-blue-900 bg-opacity-50 rounded px-2 py-1 min-w-[50px]">
+                                                <span className="text-xl font-bold text-white block">
+                                                    {String(item.value).padStart(2, '0')}
+                                                </span>
+                                            </div>
+                                            <span className="text-xs text-blue-200 block">
+                                                {item.label}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Images Section */}
                         <div className="space-y-4">
@@ -234,16 +369,16 @@ export default function ProductDetails({ product: initialProduct }: Props) {
                             {/* Price */}
                             <div className="flex items-center gap-3">
                                 <p className="text-3xl font-bold text-primary">
-                                    ৳{selectedVariant?.price.toFixed(2) || product.price.toFixed(2)}
+                                    ৳{displayPrice.toFixed(2)}
                                 </p>
-                                {product.original_price && (
+                                {displayOriginalPrice && (
                                     <>
                                         <p className="text-xl text-gray-400 line-through">
-                                            ৳{product.original_price.toFixed(2)}
+                                            ৳{displayOriginalPrice.toFixed(2)}
                                         </p>
-                                        {discountPercent && (
+                                        {displayDiscountPercent && (
                                             <span className="bg-red-600 text-white px-2 py-1 rounded text-sm font-bold">
-                                                -{discountPercent}%
+                                                -{displayDiscountPercent}%
                                             </span>
                                         )}
                                     </>
@@ -338,9 +473,13 @@ export default function ProductDetails({ product: initialProduct }: Props) {
                                             product_id: product.id,
                                             product_variant_id: selectedVariant.id,
                                             quantity: 1,
+                                            flash_sale_id: flashDealData?.flash_sale?.id || null,
+                                            flash_deal_price: flashDealProduct?.sale_price || null,
                                         } : {
                                             product_id: product.id,
                                             quantity: 1,
+                                            flash_sale_id: flashDealData?.flash_sale?.id || null,
+                                            flash_deal_price: flashDealProduct?.sale_price || null,
                                         };
                                         
                                         try {
@@ -369,9 +508,13 @@ export default function ProductDetails({ product: initialProduct }: Props) {
                                             product_id: product.id,
                                             product_variant_id: selectedVariant.id,
                                             quantity: 1,
+                                            flash_sale_id: flashDealData?.flash_sale?.id || null,
+                                            flash_deal_price: flashDealProduct?.sale_price || null,
                                         } : {
                                             product_id: product.id,
                                             quantity: 1,
+                                            flash_sale_id: flashDealData?.flash_sale?.id || null,
+                                            flash_deal_price: flashDealProduct?.sale_price || null,
                                         };
                                         
                                         try {

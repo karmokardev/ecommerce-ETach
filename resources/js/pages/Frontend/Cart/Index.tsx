@@ -28,6 +28,8 @@ interface CartItem {
     };
     quantity: number;
     subtotal: number;
+    flash_sale_id?: number | null;
+    flash_deal_price?: number | null;
 }
 
 interface Cart {
@@ -37,6 +39,8 @@ interface Cart {
     total?: number;
     shipping_total?: number;
     tax_total?: number;
+    tax?: number;
+    discount?: number;
 }
 
 const CartIndex: React.FC = () => {
@@ -109,6 +113,8 @@ const CartIndex: React.FC = () => {
     };
 
     const getItemPrice = (item: CartItem) => {
+        // Use flash deal price if available, otherwise use regular price
+        if (item.flash_deal_price) return item.flash_deal_price;
         if (item.variant && item.variant.price) return item.variant.price;
         if (item.product.min_price) return item.product.min_price;
         return 0;
@@ -124,7 +130,7 @@ const CartIndex: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="mx-auto w-full lg:max-w-[var(--breakpoint-2xl)] px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 {/* Header */}
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                     <button
@@ -227,6 +233,11 @@ const CartIndex: React.FC = () => {
                                                         <span className="text-xs sm:text-sm text-gray-500">
                                                             ({formatPrice(itemPrice)} each)
                                                         </span>
+                                                        {item.flash_sale_id && (
+                                                            <span className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
+                                                                FLASH DEAL
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </div>
 
@@ -278,24 +289,20 @@ const CartIndex: React.FC = () => {
                                         </span>
                                         <span className="font-semibold">{formatPrice(subtotal)}</span>
                                     </div>
-                                    {cart.shipping_total && (
-                                        <div className="flex justify-between text-gray-600 text-sm sm:text-base">
-                                            <span className="flex items-center gap-2">
-                                                <Truck className="w-3 h-3 sm:w-4 sm:h-4" />
-                                                Shipping
-                                            </span>
-                                            <span className="font-semibold">{formatPrice(cart.shipping_total)}</span>
-                                        </div>
-                                    )}
-                                    {cart.tax_total && (
-                                        <div className="flex justify-between text-gray-600 text-sm sm:text-base">
-                                            <span className="flex items-center gap-2">
-                                                <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" />
-                                                Tax
-                                            </span>
-                                            <span className="font-semibold">{formatPrice(cart.tax_total)}</span>
-                                        </div>
-                                    )}
+                                    <div className="flex justify-between text-gray-600 text-sm sm:text-base">
+                                        <span className="flex items-center gap-2">
+                                            <Truck className="w-3 h-3 sm:w-4 sm:h-4" />
+                                            Shipping
+                                        </span>
+                                        <span className="font-semibold">{formatPrice(0)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-gray-600 text-sm sm:text-base">
+                                        <span className="flex items-center gap-2">
+                                            <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" />
+                                            Tax (15%)
+                                        </span>
+                                        <span className="font-semibold">{formatPrice(cart.tax || 0)}</span>
+                                    </div>
                                     <div className="flex justify-between text-lg sm:text-xl font-bold text-gray-900 pt-3 sm:pt-4 border-t border-gray-200">
                                         <span>Total</span>
                                         <span>{formatPrice(cart.total || subtotal)}</span>

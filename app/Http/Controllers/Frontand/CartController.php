@@ -45,6 +45,8 @@ class CartController extends Controller
             'product_id' => 'required|exists:products,id',
             'product_variant_id' => 'nullable|exists:product_variants,id',
             'quantity' => 'required|integer|min:1',
+            'flash_sale_id' => 'nullable|exists:flash_sales,id',
+            'flash_deal_price' => 'nullable|numeric|min:0',
         ]);
 
         $user = Auth::user();
@@ -59,13 +61,20 @@ class CartController extends Controller
         // Check if product exists
         $product = Product::findOrFail($request->product_id);
 
-        // Get price from variant or product (using variant pricing)
-        if ($request->product_variant_id) {
-            $variant = ProductVariant::findOrFail($request->product_variant_id);
-            $price = $variant->price ?? 0;
+        // Use flash deal price if provided, otherwise use regular price
+        if ($request->filled('flash_deal_price') && $request->filled('flash_sale_id')) {
+            $price = $request->flash_deal_price;
+            $flashSaleId = $request->flash_sale_id;
         } else {
-            // For products without variants, use min price from variants or 0
-            $price = $product->getMinPriceAttribute() ?? 0;
+            // Get price from variant or product (using variant pricing)
+            if ($request->product_variant_id) {
+                $variant = ProductVariant::findOrFail($request->product_variant_id);
+                $price = $variant->price ?? 0;
+            } else {
+                // For products without variants, use min price from variants or 0
+                $price = $product->getMinPriceAttribute() ?? 0;
+            }
+            $flashSaleId = null;
         }
 
         // Check if item already exists in cart
@@ -75,9 +84,16 @@ class CartController extends Controller
             ->first();
 
         if ($existingItem) {
-            // Update quantity
+            // Update quantity and potentially flash deal info
             $existingItem->quantity += $request->quantity;
             $existingItem->subtotal = $existingItem->quantity * $price;
+            
+            // Update flash deal info if provided
+            if ($flashSaleId) {
+                $existingItem->flash_sale_id = $flashSaleId;
+                $existingItem->flash_deal_price = $price;
+            }
+            
             $existingItem->save();
         } else {
             // Create new item
@@ -87,6 +103,8 @@ class CartController extends Controller
                 'product_variant_id' => $request->product_variant_id,
                 'quantity' => $request->quantity,
                 'subtotal' => $request->quantity * $price,
+                'flash_sale_id' => $flashSaleId,
+                'flash_deal_price' => $flashSaleId ? $price : null,
             ]);
         }
 
@@ -122,12 +140,17 @@ class CartController extends Controller
             ->with(['product', 'variant'])
             ->firstOrFail();
 
-        // Get price from variant or product (using variant pricing)
-        if ($cartItem->product_variant_id) {
-            $price = $cartItem->variant->price ?? 0;
+        // Use flash deal price if available, otherwise use regular price
+        if ($cartItem->flash_deal_price && $cartItem->flash_sale_id) {
+            $price = $cartItem->flash_deal_price;
         } else {
-            // For products without variants, use min price from variants or 0
-            $price = $cartItem->product->getMinPriceAttribute() ?? 0;
+            // Get price from variant or product (using variant pricing)
+            if ($cartItem->product_variant_id) {
+                $price = $cartItem->variant->price ?? 0;
+            } else {
+                // For products without variants, use min price from variants or 0
+                $price = $cartItem->product->getMinPriceAttribute() ?? 0;
+            }
         }
 
         $cartItem->quantity = $request->quantity;

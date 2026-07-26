@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\FlashSale;
+use App\Models\FlashSaleProduct;
+use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Database\Seeder;
 
 class FlashSaleSeeder extends Seeder
@@ -12,55 +15,44 @@ class FlashSaleSeeder extends Seeder
      */
     public function run(): void
     {
-        $flashSales = [
+        // Update or create Summer Flash Sale with 30% discount for 4 days 12 hours
+        $summerFlashSale = FlashSale::updateOrCreate(
+            ['slug' => 'summer-flash-sale'],
             [
                 'name' => 'Summer Flash Sale',
-                'slug' => 'summer-flash-sale',
                 'description' => 'Massive discounts on summer collection',
                 'discount_type' => 'percentage',
                 'discount_value' => 30.00,
                 'starts_at' => now()->subDays(2),
-                'ends_at' => now()->addDays(5),
+                'ends_at' => now()->addDays(4)->addHours(12),
                 'is_active' => true,
                 'priority' => 1,
-            ],
-            [
-                'name' => 'Weekend Special',
-                'slug' => 'weekend-special',
-                'description' => 'Special weekend deals',
-                'discount_type' => 'fixed',
-                'discount_value' => 25.00,
-                'starts_at' => now()->addDays(3),
-                'ends_at' => now()->addDays(5),
-                'is_active' => true,
-                'priority' => 2,
-            ],
-            [
-                'name' => 'Black Friday Preview',
-                'slug' => 'black-friday-preview',
-                'description' => 'Early Black Friday deals',
-                'discount_type' => 'percentage',
-                'discount_value' => 40.00,
-                'starts_at' => now()->addDays(10),
-                'ends_at' => now()->addDays(15),
-                'is_active' => true,
-                'priority' => 3,
-            ],
-            [
-                'name' => 'Expired Flash Sale',
-                'slug' => 'expired-flash-sale',
-                'description' => 'This sale has ended',
-                'discount_type' => 'percentage',
-                'discount_value' => 25.00,
-                'starts_at' => now()->subDays(10),
-                'ends_at' => now()->subDays(1),
-                'is_active' => false,
-                'priority' => 0,
-            ],
-        ];
+            ]
+        );
 
-        foreach ($flashSales as $flashSale) {
-            FlashSale::create($flashSale);
+        // Add products to the active flash sale
+        $products = Product::active()->take(3)->get();
+        
+        foreach ($products as $product) {
+            $firstVariant = $product->variants->first();
+            $originalPrice = $firstVariant ? $firstVariant->price : 249.99;
+            
+            // Calculate sale price based on flash sale discount (30%)
+            $salePrice = $originalPrice * (1 - ($summerFlashSale->discount_value / 100));
+
+            FlashSaleProduct::updateOrCreate(
+                [
+                    'flash_sale_id' => $summerFlashSale->id,
+                    'product_id' => $product->id,
+                    'product_variant_id' => $firstVariant?->id,
+                ],
+                [
+                    'original_price' => $originalPrice,
+                    'sale_price' => $salePrice,
+                    'stock_limit' => 50,
+                    'sold_count' => rand(5, 20),
+                ]
+            );
         }
 
         $this->command->info('Flash sales seeded successfully!');

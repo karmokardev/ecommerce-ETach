@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductReview;
+use App\Models\FlashSale;
+use App\Models\FlashSaleProduct;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
@@ -185,6 +187,57 @@ class ProductController extends Controller
 
         return Inertia::render('Frontend/ProductDetails/Index', [
             'product' => $formattedProduct,
+        ]);
+    }
+
+    /**
+     * Get active flash deals for frontend
+     */
+    public function flashDeals(): JsonResponse
+    {
+        $activeFlashSale = FlashSale::active()
+            ->with(['products.product.images', 'products.product.variants', 'products.variant'])
+            ->orderBy('priority', 'desc')
+            ->first();
+
+        if (!$activeFlashSale) {
+            return response()->json([
+                'flash_sale' => null,
+                'products' => [],
+            ]);
+        }
+
+        $formattedProducts = $activeFlashSale->products->map(function ($flashSaleProduct) {
+            $product = $flashSaleProduct->product;
+            $primaryImage = $product->images->first()?->image ?? '/uploads/products/placeholder.svg';
+            
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'image' => $primaryImage,
+                'original_price' => (float) $flashSaleProduct->original_price,
+                'sale_price' => (float) $flashSaleProduct->sale_price,
+                'discount_percentage' => $flashSaleProduct->discount_percentage,
+                'stock_limit' => $flashSaleProduct->stock_limit,
+                'sold_count' => $flashSaleProduct->sold_count,
+                'remaining_stock' => $flashSaleProduct->remaining_stock,
+                'is_available' => $flashSaleProduct->isAvailable(),
+                'product_variant_id' => $flashSaleProduct->product_variant_id,
+            ];
+        });
+
+        return response()->json([
+            'flash_sale' => [
+                'id' => $activeFlashSale->id,
+                'name' => $activeFlashSale->name,
+                'description' => $activeFlashSale->description,
+                'discount_type' => $activeFlashSale->discount_type,
+                'discount_value' => (float) $activeFlashSale->discount_value,
+                'starts_at' => $activeFlashSale->starts_at->toISOString(),
+                'ends_at' => $activeFlashSale->ends_at->toISOString(),
+                'remaining_time' => $activeFlashSale->remaining_time,
+            ],
+            'products' => $formattedProducts,
         ]);
     }
 }

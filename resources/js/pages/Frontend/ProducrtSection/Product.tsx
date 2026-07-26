@@ -43,7 +43,7 @@ export default function ProductSection({ products: initialProducts = [] }: Props
 
     return (
         <section className="max-w-[var(--breakpoint-2xl)] mx-auto">
-            <div className=" px-4 sm:px-6 lg:px-8 py-8">
+            <div className=" px-4 sm:px-6 lg:px-8">
                 <h2 className="w-full py-4 bg-primary text-white text-3xl font-bold text-center mb-4">
                     New Arrival
                 </h2>

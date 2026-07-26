@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'product_variant_id',
     'quantity',
     'subtotal',
+    'flash_sale_id',
+    'flash_deal_price',
 ])]
 class CartItem extends Model
 {

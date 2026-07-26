@@ -75,8 +75,31 @@ class FlashSaleController extends Controller
     {
         $flashSale->load('products.product', 'products.variant');
 
+        // Get available products (not already in this flash sale)
+        $existingProductIds = $flashSale->products->pluck('product_id')->toArray();
+        $availableProducts = \App\Models\Product::with('variants')
+            ->where('status', 'active')
+            ->whereNotIn('id', $existingProductIds)
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'total_stock' => $product->variants->sum('current_stock'),
+                    'variants' => $product->variants->map(function ($variant) {
+                        return [
+                            'id' => $variant->id,
+                            'name' => $variant->name,
+                            'price' => $variant->price,
+                            'current_stock' => $variant->current_stock,
+                        ];
+                    })->toArray(),
+                ];
+            });
+
         return Inertia::render('admin/flash-sales/show', [
             'flashSale' => $flashSale,
+            'availableProducts' => $availableProducts,
         ]);
     }
 

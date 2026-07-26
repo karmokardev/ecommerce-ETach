@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckFlashDeal;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\IsAdmin;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
+            CheckFlashDeal::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
         $middleware->alias([
