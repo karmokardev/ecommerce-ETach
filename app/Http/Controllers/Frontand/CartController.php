@@ -67,15 +67,15 @@ class CartController extends Controller
             $variant = ProductVariant::findOrFail($request->product_variant_id);
         }
 
+        // Check if item already exists in cart
+        $existingItem = CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $request->product_id)
+            ->where('product_variant_id', $request->product_variant_id)
+            ->first();
+
         // Check stock availability
         $currentStock = $variant ? $variant->current_stock : $product->getTotalStockAttribute() ?? 0;
-        
-        // Calculate total quantity in cart (existing + new)
-        $existingQuantity = 0;
-        if ($existingItem) {
-            $existingQuantity = $existingItem->quantity;
-        }
-        
+        $existingQuantity = $existingItem ? $existingItem->quantity : 0;
         $totalQuantity = $existingQuantity + $request->quantity;
         
         if ($totalQuantity > $currentStock) {
@@ -101,12 +101,6 @@ class CartController extends Controller
             }
             $flashSaleId = null;
         }
-
-        // Check if item already exists in cart
-        $existingItem = CartItem::where('cart_id', $cart->id)
-            ->where('product_id', $request->product_id)
-            ->where('product_variant_id', $request->product_variant_id)
-            ->first();
 
         if ($existingItem) {
             // Update quantity and potentially flash deal info

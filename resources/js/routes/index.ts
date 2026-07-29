@@ -81,7 +81,7 @@ loginForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 login.form = loginForm
 
 /**
-* @see routes/web.php:530
+* @see routes/web.php:540
 * @route '/logout'
 */
 export const logout = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -95,7 +95,7 @@ logout.definition = {
 } satisfies RouteDefinition<["post"]>
 
 /**
-* @see routes/web.php:530
+* @see routes/web.php:540
 * @route '/logout'
 */
 logout.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ logout.url = (options?: RouteQueryOptions) => {
 }
 
 /**
-* @see routes/web.php:530
+* @see routes/web.php:540
 * @route '/logout'
 */
 logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -112,7 +112,7 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 })
 
 /**
-* @see routes/web.php:530
+* @see routes/web.php:540
 * @route '/logout'
 */
 const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -121,7 +121,7 @@ const logoutForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> =>
 })
 
 /**
-* @see routes/web.php:530
+* @see routes/web.php:540
 * @route '/logout'
 */
 logoutForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -292,6 +292,87 @@ homeForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
 })
 
 home.form = homeForm
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+export const account = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: account.url(options),
+    method: 'get',
+})
+
+account.definition = {
+    methods: ["get","head"],
+    url: '/account',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+account.url = (options?: RouteQueryOptions) => {
+    return account.definition.url + queryParams(options)
+}
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+account.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: account.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+account.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: account.url(options),
+    method: 'head',
+})
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+const accountForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: account.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+accountForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: account.url(options),
+    method: 'get',
+})
+
+/**
+* @see \App\Http\Controllers\Frontand\profileController::account
+* @see app/Http/Controllers/Frontand/profileController.php:11
+* @route '/account'
+*/
+accountForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+    action: account.url({
+        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+            _method: 'HEAD',
+            ...(options?.query ?? options?.mergeQuery ?? {}),
+        }
+    }),
+    method: 'get',
+})
+
+account.form = accountForm
 
 /**
 * @see \App\Http\Controllers\Admin\DashboardController::dashboard

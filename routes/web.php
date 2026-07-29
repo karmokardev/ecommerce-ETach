@@ -42,6 +42,7 @@ use App\Http\Controllers\Frontand\CartController;
 use App\Http\Controllers\Frontand\CheckoutController;
 use App\Http\Controllers\Frontand\FeaturedController;
 use App\Http\Controllers\Frontand\ProductController as FrontendProductController;
+use App\Http\Controllers\Frontand\profileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\Admin\MembershipApprovalController;
@@ -60,6 +61,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/wishlist/count', [FrontendWishlistController::class, 'count'])->name('wishlist.count');
     Route::post('/wishlist/{id}/move-to-cart', [FrontendWishlistController::class, 'moveToCart'])->name('wishlist.move-to-cart');
     Route::post('/wishlist/clear', [FrontendWishlistController::class, 'clear'])->name('wishlist.clear');
+
+    // Frontend Profile Route
+    Route::get('/account', [profileController::class, 'index'])->name('account');
 });
 
 // Frontend Cart Routes (both authenticated and guest users)

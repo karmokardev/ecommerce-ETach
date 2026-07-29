@@ -24,10 +24,13 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
+        // Generate username from name if not provided
+        $username = $input['username'] ?? strtolower(str_replace(' ', '', $input['name']));
+
         return User::create([
-            'username' => $input['username'],
-            // 'email' => $input['email'],
-            'phone' => $input['phone'],
+            'name' => $input['name'],
+            'username' => $username,
+            'email' => $input['email'],
             'password' => $input['password'],
             'status' => 'active',
         ]);

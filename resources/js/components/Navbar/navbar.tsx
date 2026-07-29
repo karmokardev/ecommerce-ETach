@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Search, User, ShoppingBag, Menu, X, Heart } from 'lucide-react';
+import { Search, User, ShoppingBag, Menu, X, Heart, LogIn } from 'lucide-react';
 import React, { useState } from 'react';
 import CartDrawer from '../CartDrawer';
 
@@ -29,7 +29,7 @@ const defaultLinks: NavbarLink[] = [
 
 const Navbar: React.FC<NavbarProps> = ({
     logo,
-    brandName = 'REFLECT',
+    brandName = 'Hridoy',
     links = defaultLinks,
     cartItemCount = 0,
     wishlistItemCount = 0,
@@ -41,11 +41,15 @@ const Navbar: React.FC<NavbarProps> = ({
     const { props } = usePage();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-    const [localCartCount, setLocalCartCount] = useState(0);
+    const [localCartCount, setLocalCartCount] = useState<number | null>(null);
 
-    // Get cart count from props if available
-    const finalCartCount = localCartCount > 0 ? localCartCount : ((props as any)?.cartCount || (props as any)?.cart?.count || cartItemCount);
+    // Get cart count from local state first, then props
+    const finalCartCount = localCartCount !== null ? localCartCount : ((props as any)?.cartCount || (props as any)?.cart?.count || cartItemCount);
     const finalWishlistCount = (props as any)?.wishlist?.count || wishlistItemCount;
+
+    // Check if user is authenticated
+    const auth = (props as any)?.auth;
+    const isAuthenticated = !!auth?.user;
 
     const handleCartChange = async () => {
         try {
@@ -120,11 +124,11 @@ const Navbar: React.FC<NavbarProps> = ({
                         
                         {showUser && (
                             <Link
-                                href="/account"
+                                href={isAuthenticated ? '/account' : '/login'}
                                 className="p-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all duration-200"
-                                aria-label="User account"
+                                aria-label={isAuthenticated ? "User account" : "Login"}
                             >
-                                <User className="w-5 h-5" />
+                                {isAuthenticated ? <User className="w-5 h-5" /> : <LogIn className="w-5 h-5" />}
                             </Link>
                         )}
                         
@@ -202,13 +206,13 @@ const Navbar: React.FC<NavbarProps> = ({
                                     <div className="grid grid-cols-3 gap-2">
                                         {showUser && (
                                             <Link
-                                                href="/account"
+                                                href={isAuthenticated ? '/account' : '/login'}
                                                 className="flex flex-col items-center justify-center p-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200"
-                                                aria-label="User account"
+                                                aria-label={isAuthenticated ? "User account" : "Login"}
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                             >
-                                                <User className="w-5 h-5 mb-1" />
-                                                <span className="text-xs">Account</span>
+                                                {isAuthenticated ? <User className="w-5 h-5 mb-1" /> : <LogIn className="w-5 h-5 mb-1" />}
+                                                <span className="text-xs">{isAuthenticated ? 'Account' : 'Login'}</span>
                                             </Link>
                                         )}
                                         

@@ -269,7 +269,8 @@ const CheckoutIndex: React.FC = () => {
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                className={`w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                                                required
+                                                className={`w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
                                                 placeholder="your@email.com"
                                             />
                                         </div>
@@ -284,7 +285,8 @@ const CheckoutIndex: React.FC = () => {
                                                 name="phone"
                                                 value={formData.phone}
                                                 onChange={handleInputChange}
-                                                className={`w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
+                                                required
+                                                className={`w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
                                                 placeholder="+880 1XXX-XXXXXX"
                                             />
                                         </div>
@@ -304,7 +306,8 @@ const CheckoutIndex: React.FC = () => {
                                             name="full_name"
                                             value={formData.full_name}
                                             onChange={handleInputChange}
-                                            className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.full_name ? 'border-red-500' : 'border-gray-300'}`}
+                                            required
+                                            className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.full_name ? 'border-red-500' : 'border-gray-300'}`}
                                             placeholder="John Doe"
                                         />
                                         {errors.full_name && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.full_name}</p>}
@@ -316,7 +319,8 @@ const CheckoutIndex: React.FC = () => {
                                             name="address_line_1"
                                             value={formData.address_line_1}
                                             onChange={handleInputChange}
-                                            className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.address_line_1 ? 'border-red-500' : 'border-gray-300'}`}
+                                            required
+                                            className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.address_line_1 ? 'border-red-500' : 'border-gray-300'}`}
                                             placeholder="Street address, apartment, etc."
                                         />
                                         {errors.address_line_1 && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.address_line_1}</p>}
@@ -328,7 +332,7 @@ const CheckoutIndex: React.FC = () => {
                                             name="address_line_2"
                                             value={formData.address_line_2}
                                             onChange={handleInputChange}
-                                            className="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                            className="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400"
                                             placeholder="Apartment, suite, etc."
                                         />
                                     </div>
@@ -340,7 +344,8 @@ const CheckoutIndex: React.FC = () => {
                                                 name="city"
                                                 value={formData.city}
                                                 onChange={handleInputChange}
-                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
+                                                required
+                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.city ? 'border-red-500' : 'border-gray-300'}`}
                                                 placeholder="Dhaka"
                                             />
                                             {errors.city && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.city}</p>}
@@ -352,7 +357,8 @@ const CheckoutIndex: React.FC = () => {
                                                 name="state"
                                                 value={formData.state}
                                                 onChange={handleInputChange}
-                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.state ? 'border-red-500' : 'border-gray-300'}`}
+                                                required
+                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.state ? 'border-red-500' : 'border-gray-300'}`}
                                                 placeholder="Dhaka"
                                             />
                                             {errors.state && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.state}</p>}
@@ -366,7 +372,8 @@ const CheckoutIndex: React.FC = () => {
                                                 name="postal_code"
                                                 value={formData.postal_code}
                                                 onChange={handleInputChange}
-                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.postal_code ? 'border-red-500' : 'border-gray-300'}`}
+                                                required
+                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.postal_code ? 'border-red-500' : 'border-gray-300'}`}
                                                 placeholder="1000"
                                             />
                                             {errors.postal_code && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.postal_code}</p>}
@@ -378,7 +385,8 @@ const CheckoutIndex: React.FC = () => {
                                                 name="country"
                                                 value={formData.country}
                                                 onChange={handleInputChange}
-                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
+                                                required
+                                                className={`w-full px-4 py-2 sm:py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 ${errors.country ? 'border-red-500' : 'border-gray-300'}`}
                                                 placeholder="Bangladesh"
                                             />
                                             {errors.country && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.country}</p>}
@@ -395,7 +403,7 @@ const CheckoutIndex: React.FC = () => {
                                     value={formData.notes}
                                     onChange={handleInputChange}
                                     rows={3}
-                                    className="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
+                                    className="w-full px-4 py-2 sm:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 text-gray-900 placeholder-gray-400 resize-none"
                                     placeholder="Any special instructions for your order..."
                                 />
                             </div>
@@ -482,7 +490,7 @@ const CheckoutIndex: React.FC = () => {
                     </div>
 
                     {/* Right Column - Order Summary */}
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 order-first lg:order-none">
                         <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-lg sticky top-4 sm:top-8">
                             <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Order Summary</h2>
 
