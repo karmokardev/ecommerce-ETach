@@ -40,7 +40,7 @@ class StockService
     }
 
     /**
-     * Record a stock movement with transaction safety.
+     * Record a stock movement with transaction safety and row locking.
      */
     protected function recordStockMovement(
         ProductVariant $variant,
@@ -51,7 +51,10 @@ class StockService
         ?string $remarks = null
     ): StockMovement {
         return DB::transaction(function () use ($variant, $quantity, $warehouse, $type, $reference, $remarks) {
-            $beforeStock = $variant->current_stock;
+            // Lock the variant row to prevent race conditions
+            $lockedVariant = ProductVariant::lockForUpdate()->findOrFail($variant->id);
+            
+            $beforeStock = $lockedVariant->current_stock;
             $afterStock = $beforeStock + $quantity;
 
             // Prevent negative stock
@@ -60,12 +63,12 @@ class StockService
             }
 
             // Update variant stock
-            $variant->update(['current_stock' => $afterStock]);
+            $lockedVariant->update(['current_stock' => $afterStock]);
 
             // Create stock movement record
             $movement = StockMovement::create([
                 'warehouse_id' => $warehouse->id,
-                'product_variant_id' => $variant->id,
+                'product_variant_id' => $lockedVariant->id,
                 'type' => $type,
                 'quantity' => $quantity,
                 'before_stock' => $beforeStock,

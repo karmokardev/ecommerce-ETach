@@ -61,6 +61,31 @@ class CartController extends Controller
         // Check if product exists
         $product = Product::findOrFail($request->product_id);
 
+        // Get variant if specified
+        $variant = null;
+        if ($request->product_variant_id) {
+            $variant = ProductVariant::findOrFail($request->product_variant_id);
+        }
+
+        // Check stock availability
+        $currentStock = $variant ? $variant->current_stock : $product->getTotalStockAttribute() ?? 0;
+        
+        // Calculate total quantity in cart (existing + new)
+        $existingQuantity = 0;
+        if ($existingItem) {
+            $existingQuantity = $existingItem->quantity;
+        }
+        
+        $totalQuantity = $existingQuantity + $request->quantity;
+        
+        if ($totalQuantity > $currentStock) {
+            return response()->json([
+                'message' => 'Insufficient stock. Only ' . $currentStock . ' items available.',
+                'available_stock' => $currentStock,
+                'requested_quantity' => $totalQuantity,
+            ], 400);
+        }
+
         // Use flash deal price if provided, otherwise use regular price
         if ($request->filled('flash_deal_price') && $request->filled('flash_sale_id')) {
             $price = $request->flash_deal_price;
@@ -139,6 +164,17 @@ class CartController extends Controller
             ->where('cart_id', $cart->id)
             ->with(['product', 'variant'])
             ->firstOrFail();
+
+        // Check stock availability before updating
+        $currentStock = $cartItem->variant ? $cartItem->variant->current_stock : $cartItem->product->getTotalStockAttribute() ?? 0;
+        
+        if ($request->quantity > $currentStock) {
+            return response()->json([
+                'message' => 'Insufficient stock. Only ' . $currentStock . ' items available.',
+                'available_stock' => $currentStock,
+                'requested_quantity' => $request->quantity,
+            ], 400);
+        }
 
         // Use flash deal price if available, otherwise use regular price
         if ($cartItem->flash_deal_price && $cartItem->flash_sale_id) {

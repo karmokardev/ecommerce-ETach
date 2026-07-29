@@ -39,6 +39,7 @@ use App\Http\Controllers\Admin\CartController as AdminCartController;
 use App\Http\Controllers\Frontand\HomeController;
 use App\Http\Controllers\Frontand\WishlistController as FrontendWishlistController;
 use App\Http\Controllers\Frontand\CartController;
+use App\Http\Controllers\Frontand\CheckoutController;
 use App\Http\Controllers\Frontand\FeaturedController;
 use App\Http\Controllers\Frontand\ProductController as FrontendProductController;
 use App\Http\Controllers\PostController;
@@ -72,6 +73,11 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::post('/cart/merge', [CartController::class, 'merge'])->name('cart.merge')->middleware('auth');
 Route::post('/cart/check', [CartController::class, 'check'])->name('cart.check');
 Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+// Frontend Checkout Routes
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/order/{id}', [CheckoutController::class, 'show'])->name('checkout.show');
 
 // Frontend Featured Products Routes
 Route::get('/api/featured-products', [FeaturedController::class, 'index'])->name('api.featured-products.index');

@@ -27,7 +27,6 @@ class CategoryFactory extends Factory
             'slug' => fake()->slug(),
             'description' => fake()->paragraph(),
             'image' => null,
-            'icon' => null,
             'sort' => fake()->numberBetween(0, 100),
             'status' => fake()->randomElement(['active', 'inactive']),
         ];
